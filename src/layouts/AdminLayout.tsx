@@ -49,14 +49,20 @@ const AdminLayout = () => {
 
             {/* Sidebar */}
             <aside className={cn(
-                "fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-200 ease-in-out lg:transform-none",
+                "fixed lg:static inset-y-0 left-0 z-50 w-64 bg-[#0f172a] border-r border-gray-800 transform transition-transform duration-200 ease-in-out lg:transform-none",
                 isSidebarOpen ? "translate-x-0" : "-translate-x-full"
             )}>
-                <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200">
-                    <span className="text-xl font-bold text-gray-900">Admin Panel</span>
+                <div className="h-16 flex items-center justify-between px-6 border-b border-gray-800">
+                    <div className="flex items-center gap-3">
+                        <img
+                            src="https://lhbwfbquxkutcyqazpnw.supabase.co/storage/v1/object/public/images/logo/v3%20png.webp"
+                            alt="Advanx Academy"
+                            className="h-8 w-auto"
+                        />
+                    </div>
                     <button
                         onClick={() => setIsSidebarOpen(false)}
-                        className="lg:hidden text-gray-500 hover:text-gray-700"
+                        className="lg:hidden text-gray-400 hover:text-white"
                     >
                         <X className="h-6 w-6" />
                     </button>
@@ -71,8 +77,8 @@ const AdminLayout = () => {
                             className={cn(
                                 "flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors",
                                 isActive(item.path, item.exact)
-                                    ? "bg-primary/10 text-primary"
-                                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                                    ? "bg-blue-600 text-white"
+                                    : "text-gray-300 hover:bg-gray-800 hover:text-white"
                             )}
                         >
                             <item.icon className="mr-3 h-5 w-5" />
@@ -81,10 +87,10 @@ const AdminLayout = () => {
                     ))}
                 </nav>
 
-                <div className="absolute bottom-0 w-full p-4 border-t border-gray-200">
+                <div className="absolute bottom-0 w-full p-4 border-t border-gray-800">
                     <button
                         onClick={handleLogout}
-                        className="flex items-center w-full px-4 py-3 text-sm font-medium text-red-600 rounded-md hover:bg-red-50 transition-colors"
+                        className="flex items-center w-full px-4 py-3 text-sm font-medium text-red-400 rounded-md hover:bg-gray-800 transition-colors"
                     >
                         <LogOut className="mr-3 h-5 w-5" />
                         Sair
@@ -93,16 +99,16 @@ const AdminLayout = () => {
             </aside>
 
             {/* Main Content */}
-            <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+            <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#1e293b]">
                 {/* Mobile Header */}
-                <header className="lg:hidden h-16 bg-white border-b border-gray-200 flex items-center px-4">
+                <header className="lg:hidden h-16 bg-[#0f172a] border-b border-gray-800 flex items-center px-4">
                     <button
                         onClick={() => setIsSidebarOpen(true)}
-                        className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                        className="text-gray-400 hover:text-white focus:outline-none"
                     >
                         <Menu className="h-6 w-6" />
                     </button>
-                    <span className="ml-4 text-lg font-medium text-gray-900">Menu</span>
+                    <span className="ml-4 text-lg font-medium text-white">Menu</span>
                 </header>
 
                 <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">

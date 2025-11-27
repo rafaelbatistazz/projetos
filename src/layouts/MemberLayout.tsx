@@ -130,82 +130,68 @@ const MemberLayout = () => {
                 </div>
                 <div className="flex items-center space-x-4">
                     <span className="text-sm text-gray-500 hidden sm:block">{userEmail}</span>
-                    <Button variant="ghost" onClick={handleLogout} className="text-gray-500 hover:text-red-600">
+                    ))}
+                </div>
+
+                <div className="p-4 border-t border-gray-800 flex items-center justify-between">
+                    <span className="text-sm text-gray-400 truncate">{userEmail}</span>
+                    <Button variant="ghost" onClick={handleLogout} className="text-gray-400 hover:text-red-500">
                         <LogOut className="h-5 w-5" />
                     </Button>
                 </div>
-            </header>
+                <div className="pl-2 space-y-2">
+                    {course.modules.map(module => (
+                        <div key={module.id} className="space-y-1">
+                            <button
+                                onClick={() => toggleModule(module.id)}
+                                className="w-full flex items-center justify-between px-3 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                            >
+                                <span className="truncate font-medium">{module.title}</span>
+                                {expandedModules[module.id] ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+                            </button>
 
-            <div className="flex-1 flex overflow-hidden">
-                {/* Sidebar */}
-                <aside className={cn(
-                    "fixed inset-y-0 left-0 z-10 w-80 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:static lg:transform-none mt-16 lg:mt-0 overflow-y-auto pb-20",
-                    isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-                )}>
-                    <div className="p-4 space-y-4">
-                        {courses.map(course => (
-                            <div key={course.id} className="space-y-2">
-                                <button
-                                    onClick={() => toggleCourse(course.id)}
-                                    className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                                >
-                                    <span className="truncate">{course.title}</span>
-                                    {expandedCourses[course.id] ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                                </button>
-
-                                {expandedCourses[course.id] && (
-                                    <div className="pl-2 space-y-2">
-                                        {course.modules.map(module => (
-                                            <div key={module.id} className="space-y-1">
-                                                <button
-                                                    onClick={() => toggleModule(module.id)}
-                                                    className="w-full flex items-center justify-between px-3 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
-                                                >
-                                                    <span className="truncate font-medium">{module.title}</span>
-                                                    {expandedModules[module.id] ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
-                                                </button>
-
-                                                {expandedModules[module.id] && (
-                                                    <div className="pl-4 space-y-1">
-                                                        {module.lessons.map(lesson => {
-                                                            const isActive = location.pathname === `/lesson/${lesson.id}`;
-                                                            return (
-                                                                <Link
-                                                                    key={lesson.id}
-                                                                    to={`/lesson/${lesson.id}`}
-                                                                    onClick={() => setIsSidebarOpen(false)}
-                                                                    className={cn(
-                                                                        "group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
-                                                                        isActive
-                                                                            ? "bg-primary/10 text-primary"
-                                                                            : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
-                                                                    )}
-                                                                >
-                                                                    <PlayCircle className={cn(
-                                                                        "mr-2 h-4 w-4 flex-shrink-0",
-                                                                        isActive ? "text-primary" : "text-gray-400 group-hover:text-gray-500"
-                                                                    )} />
-                                                                    <span className="truncate">{lesson.title}</span>
-                                                                </Link>
-                                                            );
-                                                        })}
-                                                    </div>
+                            {expandedModules[module.id] && (
+                                <div className="pl-4 space-y-1">
+                                    {module.lessons.map(lesson => {
+                                        const isActive = location.pathname === `/lesson/${lesson.id}`;
+                                        return (
+                                            <Link
+                                                key={lesson.id}
+                                                to={`/lesson/${lesson.id}`}
+                                                onClick={() => setIsSidebarOpen(false)}
+                                                className={cn(
+                                                    "group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
+                                                    isActive
+                                                        ? "bg-primary/10 text-primary"
+                                                        : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
                                                 )}
-                                            </div>
-                                        ))}
-                                    </div>
+                                            >
+                                                <PlayCircle className={cn(
+                                                    "mr-2 h-4 w-4 flex-shrink-0",
+                                                    isActive ? "text-primary" : "text-gray-400 group-hover:text-gray-500"
+                                                )} />
+                                                <span className="truncate">{lesson.title}</span>
+                                            </Link>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
                                 )}
-                            </div>
-                        ))}
-                    </div>
-                </aside>
-
-                {/* Main Content */}
-                <main className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 lg:p-8">
-                    <Outlet context={{ courses }} />
-                </main>
-            </div>
         </div>
+    ))
+}
+                    </div >
+                </aside >
+
+    {/* Main Content */ }
+    < main className = "flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 lg:p-8" >
+        <Outlet context={{ courses }} />
+                </main >
+            </div >
+        </div >
     );
 };
 
