@@ -32,16 +32,16 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-            <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+        <div className="min-h-screen flex items-center justify-center bg-[#0f1419] px-4">
+            <div className="max-w-md w-full space-y-8 bg-[#1a1f2e] p-8 rounded-xl shadow-2xl border border-gray-700">
                 <div className="text-center">
-                    <div className="mx-auto h-12 w-12 bg-primary/10 flex items-center justify-center rounded-full">
-                        <Lock className="h-6 w-6 text-primary" />
+                    <div className="mx-auto h-12 w-12 bg-blue-600 flex items-center justify-center rounded-full">
+                        <Lock className="h-6 w-6 text-white" />
                     </div>
-                    <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+                    <h2 className="mt-6 text-3xl font-extrabold text-white">
                         Área de Membros
                     </h2>
-                    <p className="mt-2 text-sm text-gray-600">
+                    <p className="mt-2 text-sm text-gray-400">
                         Digite seu email para acessar o conteúdo
                     </p>
                 </div>
@@ -57,7 +57,7 @@ const Login = () => {
                                 type="email"
                                 autoComplete="email"
                                 required
-                                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+                                className="appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-600 placeholder-gray-500 text-white bg-[#0f1419] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                                 placeholder="Seu email de acesso"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -66,7 +66,7 @@ const Login = () => {
                     </div>
 
                     {error && (
-                        <div className="text-red-500 text-sm text-center bg-red-50 p-2 rounded">
+                        <div className="text-red-400 text-sm text-center bg-red-500/10 p-3 rounded-md border border-red-500/20">
                             {error}
                         </div>
                     )}
@@ -75,7 +75,7 @@ const Login = () => {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-70 disabled:cursor-not-allowed transition-colors"
+                            className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-70 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-600/30"
                         >
                             {isLoading ? (
                                 <Loader2 className="animate-spin h-5 w-5" />
