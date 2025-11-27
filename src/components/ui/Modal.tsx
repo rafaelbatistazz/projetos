@@ -1,6 +1,5 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import { cn } from '../../lib/utils';
 
 interface ModalProps {
     isOpen: boolean;
@@ -52,6 +51,5 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
             </div>
         </div>
     );
-};
+}
 
-export default Modal;
