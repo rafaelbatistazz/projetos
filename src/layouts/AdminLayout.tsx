@@ -49,10 +49,10 @@ const AdminLayout = () => {
 
             {/* Sidebar */}
             <aside className={cn(
-                "fixed lg:static inset-y-0 left-0 z-50 w-64 bg-[#0f172a] border-r border-gray-800 transform transition-transform duration-200 ease-in-out lg:transform-none",
+                "fixed lg:static inset-y-0 left-0 z-50 w-64 bg-[#1a1f2e] border-r border-gray-700 transform transition-transform duration-200 ease-in-out lg:transform-none",
                 isSidebarOpen ? "translate-x-0" : "-translate-x-full"
             )}>
-                <div className="h-16 flex items-center justify-between px-6 border-b border-gray-800">
+                <div className="h-16 flex items-center justify-between px-6 border-b border-gray-700">
                     <div className="flex items-center gap-3">
                         <img
                             src="https://lhbwfbquxkutcyqazpnw.supabase.co/storage/v1/object/public/images/logo/v3%20png.webp"
@@ -75,10 +75,10 @@ const AdminLayout = () => {
                             to={item.path}
                             onClick={() => setIsSidebarOpen(false)}
                             className={cn(
-                                "flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors",
+                                "flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors",
                                 isActive(item.path, item.exact)
-                                    ? "bg-blue-600 text-white"
-                                    : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                                    ? "bg-blue-600 text-white shadow-lg shadow-blue-600/50"
+                                    : "text-gray-300 hover:bg-gray-700/50 hover:text-white"
                             )}
                         >
                             <item.icon className="mr-3 h-5 w-5" />
@@ -87,10 +87,10 @@ const AdminLayout = () => {
                     ))}
                 </nav>
 
-                <div className="absolute bottom-0 w-full p-4 border-t border-gray-800">
+                <div className="absolute bottom-0 w-full p-4 border-t border-gray-700">
                     <button
                         onClick={handleLogout}
-                        className="flex items-center w-full px-4 py-3 text-sm font-medium text-red-400 rounded-md hover:bg-gray-800 transition-colors"
+                        className="flex items-center w-full px-4 py-3 text-sm font-medium text-red-400 rounded-lg hover:bg-red-500/10 hover:text-red-300 transition-colors"
                     >
                         <LogOut className="mr-3 h-5 w-5" />
                         Sair
@@ -99,9 +99,9 @@ const AdminLayout = () => {
             </aside>
 
             {/* Main Content */}
-            <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#1e293b]">
+            <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#0f1419]">
                 {/* Mobile Header */}
-                <header className="lg:hidden h-16 bg-[#0f172a] border-b border-gray-800 flex items-center px-4">
+                <header className="lg:hidden h-16 bg-[#1a1f2e] border-b border-gray-700 flex items-center px-4">
                     <button
                         onClick={() => setIsSidebarOpen(true)}
                         className="text-gray-400 hover:text-white focus:outline-none"
