@@ -39,7 +39,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const login = async (email: string) => {
         try {
             setIsLoading(true);
-            // Call the RPC function to check access
+
+            // Check if this is the admin email
+            const ADMIN_EMAIL = 'gt.rafaa@gmail.com';
+            if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                setUserEmail(email);
+                setIsAdmin(true);
+                localStorage.setItem('advanx_user_email', email);
+                localStorage.setItem('advanx_is_admin', 'true');
+                return { success: true };
+            }
+
+            // Call the RPC function to check access for regular users
             const { data: isAllowed, error } = await supabase.rpc('check_user_access', {
                 email_input: email,
             });

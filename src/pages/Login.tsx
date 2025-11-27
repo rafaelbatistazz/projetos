@@ -20,7 +20,12 @@ const Login = () => {
 
         const result = await login(email);
         if (result.success) {
-            navigate('/');
+            // Check if admin email to redirect appropriately
+            if (email.toLowerCase() === 'gt.rafaa@gmail.com') {
+                navigate('/admin');
+            } else {
+                navigate('/');
+            }
         } else {
             setError(result.message || 'Erro ao entrar.');
         }
