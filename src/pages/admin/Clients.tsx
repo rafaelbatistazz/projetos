@@ -108,8 +108,8 @@ const Clients = () => {
         <div>
             <div className="sm:flex sm:items-center">
                 <div className="sm:flex-auto">
-                    <h1 className="text-xl font-semibold text-gray-900">Clientes</h1>
-                    <p className="mt-2 text-sm text-gray-700">
+                    <h1 className="text-2xl font-bold text-white">Clientes</h1>
+                    <p className="mt-2 text-sm text-gray-400">
                         Gerencie o acesso dos membros à plataforma.
                     </p>
                 </div>
@@ -124,17 +124,17 @@ const Clients = () => {
             <div className="mt-8 flex flex-col">
                 <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                        <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                            <table className="min-w-full divide-y divide-gray-300">
-                                <thead className="bg-gray-50">
+                        <div className="overflow-hidden shadow-xl ring-1 ring-gray-700 md:rounded-lg">
+                            <table className="min-w-full divide-y divide-gray-700">
+                                <thead className="bg-[#1a1f2e]">
                                     <tr>
-                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-200">
                                             Email
                                         </th>
-                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-200">
                                             Status
                                         </th>
-                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-200">
                                             Data de Cadastro
                                         </th>
                                         <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
@@ -142,41 +142,41 @@ const Clients = () => {
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-200 bg-white">
+                                <tbody className="divide-y divide-gray-700 bg-[#0f1419]">
                                     {loading ? (
                                         <tr>
-                                            <td colSpan={4} className="text-center py-4">Carregando...</td>
+                                            <td colSpan={4} className="text-center py-8 text-gray-400">Carregando...</td>
                                         </tr>
                                     ) : clients.length === 0 ? (
                                         <tr>
-                                            <td colSpan={4} className="text-center py-4 text-gray-500">Nenhum cliente encontrado.</td>
+                                            <td colSpan={4} className="text-center py-8 text-gray-400">Nenhum cliente encontrado.</td>
                                         </tr>
                                     ) : (
                                         clients.map((client) => (
-                                            <tr key={client.id}>
-                                                <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-900">
+                                            <tr key={client.id} className="hover:bg-gray-800/50 transition-colors">
+                                                <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-white">
                                                     {client.email}
                                                 </td>
-                                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${client.status_cliente ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
+                                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${client.status_cliente ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'
                                                         }`}>
                                                         {client.status_cliente ? 'Ativo' : 'Inativo'}
                                                     </span>
                                                 </td>
-                                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
                                                     {new Date(client.created_at).toLocaleDateString('pt-BR')}
                                                 </td>
                                                 <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                                     <button
                                                         onClick={() => handleToggleStatus(client)}
-                                                        className={`mr-4 ${client.status_cliente ? 'text-red-600 hover:text-red-900' : 'text-green-600 hover:text-green-900'}`}
+                                                        className={`mr-4 ${client.status_cliente ? 'text-red-400 hover:text-red-300' : 'text-green-400 hover:text-green-300'}`}
                                                         title={client.status_cliente ? 'Desativar' : 'Ativar'}
                                                     >
                                                         {client.status_cliente ? <XIcon className="h-4 w-4" /> : <Check className="h-4 w-4" />}
                                                     </button>
                                                     <button
                                                         onClick={() => handleDelete(client.id)}
-                                                        className="text-red-600 hover:text-red-900"
+                                                        className="text-red-400 hover:text-red-300"
                                                         title="Excluir"
                                                     >
                                                         <Trash2 className="h-4 w-4" />
