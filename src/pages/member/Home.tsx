@@ -34,7 +34,7 @@ const MemberHome = () => {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-full min-h-[50vh]">
-                <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
         );
     }
@@ -81,8 +81,8 @@ const MemberHome = () => {
                 </div>
             )}
 
-            <div className="mt-12 p-4 bg-gray-800/50 rounded-lg border border-gray-700 text-sm text-gray-400">
-                <p><strong>Dica para Capas:</strong> Para melhor visualização, use imagens verticais com proporção 2:3 (ex: 1080x1620px).</p>
+            <div className="mt-12 p-4 bg-gray-800/50 rounded-lg border border-gray-700 text-sm text-gray-400 hidden">
+                {/* Tip moved to Admin */}
             </div>
         </div>
     );

@@ -1,64 +1,114 @@
+```javascript
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../types/supabase';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, GripVertical } from 'lucide-react';
 import { toast } from 'sonner';
 import Modal from '../../components/ui/Modal';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
+import {
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    DragEndEvent
+} from '@dnd-kit/core';
+import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    verticalListSortingStrategy,
+    useSortable
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 type Course = Database['public']['Tables']['courses']['Row'];
 type Module = Database['public']['Tables']['modules']['Row'];
 
+// Sortable Row Component
+const SortableRow = ({ module, courses, handleOpenModal, handleDelete }: { module: Module, courses: Course[], handleOpenModal: (module: Module) => void, handleDelete: (id: string) => void }) => {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+    } = useSortable({ id: module.id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
+
+    return (
+        <tr ref={setNodeRef} style={style} className="hover:bg-gray-800/50 transition-colors">
+            <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-white sm:pl-6">
+                <div className="flex items-center gap-3">
+                    <button {...attributes} {...listeners} className="cursor-grab text-gray-500 hover:text-white">
+                        <GripVertical className="h-5 w-5" />
+                    </button>
+                    {module.order_position}
+                </div>
+            </td>
+            <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-white">
+                {module.title}
+            </td>
+            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
+                {courses.find((c: Course) => c.id === module.course_id)?.title || 'N/A'}
+            </td>
+            <td className="px-3 py-4 text-sm text-gray-300 max-w-xs truncate">
+                {module.description}
+            </td>
+            <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                <button
+                    onClick={() => handleOpenModal(module)}
+                    className="text-primary hover:text-primary/80 mr-4 transition-colors"
+                >
+                    <Pencil className="h-4 w-4" />
+                </button>
+                <button
+                    onClick={() => handleDelete(module.id)}
+                    className="text-red-400 hover:text-red-300 transition-colors"
+                >
+                    <Trash2 className="h-4 w-4" />
+                </button>
+            </td>
+        </tr>
+    );
+};
+
 const Modules = () => {
     const [courses, setCourses] = useState<Course[]>([]);
     const [modules, setModules] = useState<Module[]>([]);
-    const [selectedCourseId, setSelectedCourseId] = useState<string>('');
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingModule, setEditingModule] = useState<Module | null>(null);
     const [formData, setFormData] = useState({
         title: '',
         description: '',
+        course_id: '',
         order_position: 0,
+        thumbnail_url: '',
     });
     const [saving, setSaving] = useState(false);
 
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
+
     useEffect(() => {
-        fetchCourses();
+        fetchData();
     }, []);
 
-    useEffect(() => {
-        if (selectedCourseId) {
-            fetchModules(selectedCourseId);
-        } else {
-            setModules([]);
-        }
-    }, [selectedCourseId]);
-
-    const fetchCourses = async () => {
-        try {
-            const { data, error } = await supabase
-                .from('courses')
-                .select('*')
-                .order('title');
-            if (error) throw error;
-            setCourses(data || []);
-            if (data && data.length > 0 && !selectedCourseId) {
-                setSelectedCourseId(data[0].id);
-            }
-        } catch (error) {
-            console.error('Error fetching courses:', error);
-            toast.error('Erro ao carregar cursos');
-        }
-    };
-
-    const fetchModules = async (courseId: string) => {
+    const fetchData = async () => {
         setLoading(true);
         try {
-            const { data, error } = await supabase
-                .from('modules')
-                .select('*')
                 .eq('course_id', courseId)
                 .order('order_position', { ascending: true });
 
@@ -135,7 +185,7 @@ const Modules = () => {
             handleCloseModal();
         } catch (error: any) {
             console.error('Error saving module:', error);
-            toast.error(`Erro ao salvar módulo: ${error.message || error.error_description || 'Erro desconhecido'}`);
+            toast.error(`Erro ao salvar módulo: ${ error.message || error.error_description || 'Erro desconhecido' } `);
         } finally {
             setSaving(false);
         }
@@ -202,60 +252,41 @@ const Modules = () => {
                             <table className="min-w-full divide-y divide-gray-700">
                                 <thead className="bg-[#1a1f2e]">
                                     <tr>
-                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-200">
-                                            Ordem
-                                        </th>
-                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-200">
+                                        <th scope="col" className="py-3 pl-4 pr-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400 sm:pl-6">
                                             Título
                                         </th>
-                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-200">
+                                        <th scope="col" className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+                                            Curso
+                                        </th>
+                                        <th scope="col" className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
                                             Descrição
                                         </th>
-                                        <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                                        <th scope="col" className="relative py-3 pl-3 pr-4 sm:pr-6">
                                             <span className="sr-only">Ações</span>
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-700 bg-[#0f1419]">
-                                    {loading ? (
-                                        <tr>
-                                            <td colSpan={4} className="text-center py-8 text-gray-400">Carregando...</td>
-                                        </tr>
-                                    ) : modules.length === 0 ? (
-                                        <tr>
-                                            <td colSpan={4} className="text-center py-8 text-gray-400">
-                                                {selectedCourseId ? 'Nenhum módulo encontrado.' : 'Selecione um curso para ver os módulos.'}
-                                            </td>
-                                        </tr>
-                                    ) : (
-                                        modules.map((module) => (
-                                            <tr key={module.id} className="hover:bg-gray-800/50 transition-colors">
-                                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
-                                                    {module.order_position}
-                                                </td>
-                                                <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-white">
-                                                    {module.title}
-                                                </td>
-                                                <td className="px-3 py-4 text-sm text-gray-300 max-w-xs truncate">
-                                                    {module.description}
-                                                </td>
-                                                <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                                    <button
-                                                        onClick={() => handleOpenModal(module)}
-                                                        className="text-blue-400 hover:text-blue-300 mr-4 transition-colors"
-                                                    >
-                                                        <Pencil className="h-4 w-4" />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDelete(module.id)}
-                                                        className="text-red-400 hover:text-red-300 transition-colors"
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    )}
+                                    <DndContext 
+                                        sensors={sensors}
+                                        collisionDetection={closestCenter}
+                                        onDragEnd={handleDragEnd}
+                                    >
+                                        <SortableContext 
+                                            items={modules}
+                                            strategy={verticalListSortingStrategy}
+                                        >
+                                            {modules.map((module) => (
+                                                <SortableRow
+                                                    key={module.id}
+                                                    module={module}
+                                                    courses={courses}
+                                                    handleOpenModal={handleOpenModal}
+                                                    handleDelete={handleDelete}
+                                                />
+                                            ))}
+                                        </SortableContext>
+                                    </DndContext>
                                 </tbody>
                             </table>
                         </div>
@@ -281,7 +312,7 @@ const Modules = () => {
                             Descrição
                         </label>
                         <textarea
-                            className="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 text-white bg-[#0f1419] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            className="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 text-white bg-[#0f1419] focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm"
                             rows={3}
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}

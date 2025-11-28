@@ -35,7 +35,7 @@ const Login = () => {
         <div className="min-h-screen flex items-center justify-center bg-[#0f1419] px-4">
             <div className="max-w-md w-full space-y-8 bg-[#1a1f2e] p-8 rounded-xl shadow-2xl border border-gray-700">
                 <div className="text-center">
-                    <div className="mx-auto h-12 w-12 bg-blue-600 flex items-center justify-center rounded-full">
+                    <div className="mx-auto h-12 w-12 bg-primary flex items-center justify-center rounded-full">
                         <Lock className="h-6 w-6 text-white" />
                     </div>
                     <h2 className="mt-6 text-3xl font-extrabold text-white">
@@ -75,7 +75,7 @@ const Login = () => {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-70 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-600/30"
+                            className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-70 disabled:cursor-not-allowed transition-all shadow-lg shadow-primary/30"
                         >
                             {isLoading ? (
                                 <Loader2 className="animate-spin h-5 w-5" />

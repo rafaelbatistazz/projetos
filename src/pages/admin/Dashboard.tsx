@@ -71,7 +71,7 @@ const Dashboard = () => {
                     title="Total de Cursos"
                     value={stats.courses}
                     icon={BookOpen}
-                    color="text-blue-600"
+                    color="text-primary"
                 />
                 <StatCard
                     title="Total de Módulos"

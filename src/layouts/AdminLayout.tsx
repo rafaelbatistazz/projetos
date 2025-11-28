@@ -77,7 +77,7 @@ const AdminLayout = () => {
                             className={cn(
                                 "flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors",
                                 isActive(item.path, item.exact)
-                                    ? "bg-blue-600 text-white shadow-lg shadow-blue-600/50"
+                                    ? "bg-primary text-white shadow-lg shadow-primary/50"
                                     : "text-gray-300 hover:bg-gray-700/50 hover:text-white"
                             )}
                         >

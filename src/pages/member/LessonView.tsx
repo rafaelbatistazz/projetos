@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../types/supabase';
 import VideoPlayer from '../../components/VideoPlayer';
@@ -95,17 +96,62 @@ const LessonView = () => {
         }
     };
 
-    const handleLessonComplete = () => {
-        // Here you would implement logic to mark lesson as complete in DB
-        if (nextLessonId) {
-            navigate(`/lesson/${nextLessonId}`);
+    const { userEmail } = useAuth(); // Need userEmail for progress
+    const [isCompleted, setIsCompleted] = useState(false);
+
+    useEffect(() => {
+        if (lessonId && userEmail) {
+            checkCompletion(lessonId);
+        }
+    }, [lessonId, userEmail]);
+
+    const checkCompletion = async (id: string) => {
+        if (!userEmail) return;
+        const { data, error } = await supabase
+            .from('user_progress')
+            .select('*')
+            .eq('email', userEmail)
+            .eq('lesson_id', id)
+            .single();
+
+        if (data) setIsCompleted(true);
+        else setIsCompleted(false);
+    };
+
+    const handleLessonComplete = async () => {
+        if (!userEmail || !lesson) return;
+
+        if (isCompleted) {
+            // Unmark
+            const { error } = await supabase
+                .from('user_progress')
+                .delete()
+                .eq('email', userEmail)
+                .eq('lesson_id', lesson.id);
+
+            if (!error) setIsCompleted(false);
+        } else {
+            // Mark
+            const { error } = await supabase
+                .from('user_progress')
+                .insert({
+                    email: userEmail,
+                    lesson_id: lesson.id
+                });
+
+            if (!error) {
+                setIsCompleted(true);
+                if (nextLessonId) {
+                    navigate(`/lesson/${nextLessonId}`);
+                }
+            }
         }
     };
 
     if (loading) {
         return (
             <div className="flex items-center justify-center h-screen bg-[#0f1419]">
-                <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
         );
     }
@@ -151,10 +197,13 @@ const LessonView = () => {
                             </Button>
                             <Button
                                 onClick={handleLessonComplete}
-                                className="bg-green-600 hover:bg-green-700 text-white"
+                                className={cn(
+                                    "text-white transition-colors",
+                                    isCompleted ? "bg-green-600 hover:bg-green-700" : "bg-gray-700 hover:bg-gray-600"
+                                )}
                             >
                                 <CheckCircle className="h-4 w-4 mr-2" />
-                                Concluir Aula
+                                {isCompleted ? 'Concluída' : 'Marcar como Concluída'}
                             </Button>
                             <Button
                                 variant="secondary"

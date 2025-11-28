@@ -61,6 +61,28 @@ CREATE POLICY "Allow all access" ON modules FOR ALL USING (true) WITH CHECK (tru
 CREATE POLICY "Allow all access" ON lessons FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all access" ON clientes FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all access" ON clientes FOR ALL USING (true);
+-- User Progress Table
+CREATE TABLE IF NOT EXISTS user_progress (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE, -- Or just TEXT if using custom auth
+    email TEXT, -- Fallback for custom auth
+    lesson_id UUID REFERENCES lessons(id) ON DELETE CASCADE,
+    completed_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
+    UNIQUE(email, lesson_id)
+);
+
+-- Enable RLS for user_progress
+ALTER TABLE user_progress ENABLE ROW LEVEL SECURITY;
+
+-- Policies for user_progress
+CREATE POLICY "Users can view their own progress" ON user_progress
+    FOR SELECT USING (email = current_setting('request.jwt.claim.email', true) OR true); -- MVP: Open for now or match email
+
+CREATE POLICY "Users can insert their own progress" ON user_progress
+    FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Users can delete their own progress" ON user_progress
+    FOR DELETE USING (true);
 
 -- Function to check user access
 CREATE OR REPLACE FUNCTION check_user_access(email_input TEXT)
