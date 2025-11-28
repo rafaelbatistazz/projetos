@@ -148,27 +148,29 @@ const CourseModules = () => {
                                     </h3>
                                     <p className="text-gray-400 ml-11">{module.description}</p>
                                 </div>
-                                onClick={() => navigate(`/lesson/${module.lessons[0].id}`)}
+                                {module.lessons.length > 0 ? (
+                                    <Button
+                                        className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20"
+                                        onClick={() => handlePlayModule(module.id)}
                                     >
-                                <Play className="h-4 w-4 mr-2" />
-                                Acessar Módulo
-                            </Button>
-                            ) : (
-                            <Button
-                                variant="secondary"
-                                className="w-full justify-center opacity-50 cursor-not-allowed"
-                                disabled
-                            >
-                                <Lock className="h-4 w-4 mr-2" />
-                                Em Breve
-                            </Button>
+                                        <PlayCircle className="h-4 w-4 mr-2" />
+                                        Assistir
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        variant="secondary"
+                                        className="opacity-50 cursor-not-allowed"
+                                        disabled
+                                    >
+                                        <Lock className="h-4 w-4 mr-2" />
+                                        Em Breve
+                                    </Button>
                                 )}
+                            </div>
                         </div>
-                    </div>
-                    </div>
-    ))
-}
-            </div >
+                    </motion.div>
+                ))}
+            </motion.div>
         </div >
     );
 };
