@@ -29,7 +29,7 @@ type Module = Database['public']['Tables']['modules']['Row'];
 type Lesson = Database['public']['Tables']['lessons']['Row'];
 
 // Sortable Row Component
-const SortableRow = ({ lesson, modules, handleOpenModal, handleDelete }: any) => {
+const SortableRow = ({ lesson, handleOpenModal, handleDelete }: any) => {
     const {
         attributes,
         listeners,
@@ -50,11 +50,14 @@ const SortableRow = ({ lesson, modules, handleOpenModal, handleDelete }: any) =>
                     <button {...attributes} {...listeners} className="cursor-grab text-gray-500 hover:text-white">
                         <GripVertical className="h-5 w-5" />
                     </button>
-                    {lesson.title}
+                    {lesson.order_position}
                 </div>
             </td>
             <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
-                {modules.find((m: any) => m.id === lesson.module_id)?.title || 'N/A'}
+                {lesson.title}
+            </td>
+            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
+                {lesson.youtube_video_id || '-'}
             </td>
             <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
                 {lesson.duration || '-'}
@@ -118,6 +121,12 @@ const Lessons = () => {
             fetchModules(selectedCourseId);
         }
     }, [selectedCourseId]);
+
+    useEffect(() => {
+        if (selectedModuleId) {
+            fetchLessons(selectedModuleId);
+        }
+    }, [selectedModuleId]);
 
     const fetchData = async () => {
         setLoading(true);
@@ -195,7 +204,7 @@ const Lessons = () => {
             setModules(data || []);
             if (data && data.length > 0) {
                 setSelectedModuleId(data[0].id);
-                fetchLessons(data[0].id);
+                // fetchLessons is now triggered by useEffect
             } else {
                 setLessons([]);
                 setSelectedModuleId('');
@@ -397,9 +406,6 @@ const Lessons = () => {
                                         </th>
                                         <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-200">
                                             Vídeo ID
-                                        </th>
-                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-200">
-                                            Módulo
                                         </th>
                                         <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-200">
                                             Duração
