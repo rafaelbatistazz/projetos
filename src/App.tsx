@@ -14,6 +14,8 @@ import Lessons from './pages/admin/Lessons';
 import Clients from './pages/admin/Clients';
 import MemberLayout from './layouts/MemberLayout';
 import LessonView from './pages/member/LessonView';
+import MemberHome from './pages/member/Home';
+import CourseModules from './pages/member/CourseModules';
 
 function App() {
   return (
@@ -27,7 +29,8 @@ function App() {
           {/* Member Routes */}
           <Route element={<PrivateRoute />}>
             <Route element={<MemberLayout />}>
-              <Route path="/" element={<div className="flex items-center justify-center h-full text-gray-500">Selecione uma aula para começar</div>} />
+              <Route path="/" element={<MemberHome />} />
+              <Route path="/course/:courseId" element={<CourseModules />} />
               <Route path="/lesson/:lessonId" element={<LessonView />} />
             </Route>
           </Route>
