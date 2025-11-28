@@ -14,18 +14,13 @@ const Login = () => {
         setError('');
 
         if (!email) {
-            setError('Por favor, digite seu email.');
+            setError('Por favor, insira seu email.');
             return;
         }
 
         const result = await login(email);
         if (result.success) {
-            // Check if admin email to redirect appropriately
-            if (email.toLowerCase() === 'gt.rafaa@gmail.com') {
-                navigate('/admin');
-            } else {
-                navigate('/');
-            }
+            navigate('/');
         } else {
             setError(result.message || 'Erro ao entrar.');
         }
