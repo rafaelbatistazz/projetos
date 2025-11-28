@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, ShieldCheck } from 'lucide-react';
+import { Loader2, Lock } from 'lucide-react';
 
 const AdminLogin = () => {
     const [password, setPassword] = useState('');
