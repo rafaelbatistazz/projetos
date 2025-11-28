@@ -79,5 +79,9 @@ BEGIN
     WHERE email = email_input AND status_cliente = true
   ) INTO has_access;
   
--- Users table: Admin can do everything, Public can't see anything (RPC used instead)
-create policy "Enable all for authenticated users only" on public.users for all to authenticated using (true);
+  RETURN has_access;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Users table policy (if table exists)
+-- create policy "Enable all for authenticated users only" on public.users for all to authenticated using (true);

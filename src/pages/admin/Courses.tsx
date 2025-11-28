@@ -103,9 +103,11 @@ const Courses = () => {
 
             fetchCourses();
             handleCloseModal();
-        } catch (error) {
-            toast.error('Erro ao salvar curso');
-            console.error(error);
+            fetchCourses();
+            handleCloseModal();
+        } catch (error: any) {
+            console.error('Error saving course:', error);
+            toast.error(`Erro ao salvar curso: ${error.message || error.error_description || 'Erro desconhecido'}`);
         } finally {
             setSaving(false);
         }
