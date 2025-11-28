@@ -96,8 +96,8 @@ const Courses = () => {
         title: '',
         description: '',
         thumbnail_url: '',
-        status_curso: true,
         order_position: 0,
+        status_curso: true,
     });
     const [saving, setSaving] = useState(false);
 
@@ -180,8 +180,8 @@ const Courses = () => {
                 title: course.title,
                 description: course.description || '',
                 thumbnail_url: course.thumbnail_url || '',
-                status_curso: course.status_curso,
                 order_position: course.order_position,
+                status_curso: course.status_curso ?? true,
             });
         } else {
             setEditingCourse(null);
@@ -197,6 +197,13 @@ const Courses = () => {
     };
 
     const handleCloseModal = () => {
+        setFormData({
+            title: '',
+            description: '',
+            thumbnail_url: '',
+            order_position: 0,
+            status_curso: true,
+        });
         setIsModalOpen(false);
         setEditingCourse(null);
     };
@@ -214,6 +221,7 @@ const Courses = () => {
                         description: formData.description || null,
                         thumbnail_url: formData.thumbnail_url || null,
                         order_position: formData.order_position,
+                        status_curso: formData.status_curso,
                     } as any)
                     .eq('id', editingCourse.id);
 
@@ -227,6 +235,7 @@ const Courses = () => {
                         description: formData.description || null,
                         thumbnail_url: formData.thumbnail_url || null,
                         order_position: formData.order_position,
+                        status_curso: formData.status_curso,
                     }] as any);
 
                 if (error) throw error;
@@ -387,6 +396,27 @@ const Courses = () => {
                         value={formData.thumbnail_url}
                         onChange={(e) => setFormData({ ...formData, thumbnail_url: e.target.value })}
                     />
+
+                    {/* Status Toggle */}
+                    <div className="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg border border-gray-700">
+                        <div>
+                            <label className="text-sm font-medium text-gray-300">Status do Curso</label>
+                            <p className="text-xs text-gray-500 mt-1">
+                                Cursos inativos não aparecem para os alunos
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setFormData({ ...formData, status_curso: !formData.status_curso })}
+                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${formData.status_curso ? 'bg-green-600' : 'bg-gray-600'
+                                }`}
+                        >
+                            <span
+                                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${formData.status_curso ? 'translate-x-6' : 'translate-x-1'
+                                    }`}
+                            />
+                        </button>
+                    </div>
 
                     <div className="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
                         <Button type="submit" isLoading={saving} className="w-full sm:col-start-2">
