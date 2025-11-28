@@ -268,8 +268,8 @@ const Lessons = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!selectedModuleId) {
-            toast.error('Selecione um módulo primeiro');
+        if (!formData.module_id) {
+            toast.error('Selecione um módulo');
             return;
         }
         setSaving(true);
@@ -284,6 +284,7 @@ const Lessons = () => {
                         support_text: formData.support_text || null,
                         duration: formData.duration || null,
                         order_position: formData.order_position,
+                        module_id: formData.module_id, // Allow module transfer
                     } as any)
                     .eq('id', editingLesson.id);
 
@@ -293,7 +294,7 @@ const Lessons = () => {
                 const { error } = await supabase
                     .from('lessons')
                     .insert([{
-                        module_id: selectedModuleId,
+                        module_id: formData.module_id,
                         title: formData.title,
                         youtube_video_id: formData.youtube_video_id,
                         support_text: formData.support_text || null,
@@ -455,6 +456,57 @@ const Lessons = () => {
                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                         required
                     />
+
+                    {/* Course and Module Selectors for Transfer */}
+                    {editingLesson && (
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 p-4 bg-primary/5 border border-primary/20 rounded-lg">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-300 mb-2">
+                                    Transferir para Curso
+                                </label>
+                                <select
+                                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-600 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-[#1a1f2e] text-white"
+                                    value={courses.find(c => modules.find(m => m.id === formData.module_id)?.course_id === c.id)?.id || selectedCourseId}
+                                    onChange={(e) => {
+                                        const newCourseId = e.target.value;
+                                        // Find first module of the new course
+                                        const firstModule = modules.find(m => m.course_id === newCourseId);
+                                        if (firstModule) {
+                                            setFormData({ ...formData, module_id: firstModule.id });
+                                        }
+                                    }}
+                                >
+                                    {courses.map((course) => (
+                                        <option key={course.id} value={course.id}>
+                                            {course.title}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-300 mb-2">
+                                    Transferir para Módulo
+                                </label>
+                                <select
+                                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-600 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-[#1a1f2e] text-white"
+                                    value={formData.module_id}
+                                    onChange={(e) => setFormData({ ...formData, module_id: e.target.value })}
+                                >
+                                    {modules
+                                        .filter(m => m.course_id === (courses.find(c => modules.find(mod => mod.id === formData.module_id)?.course_id === c.id)?.id || selectedCourseId))
+                                        .map((module) => (
+                                            <option key={module.id} value={module.id}>
+                                                {module.title}
+                                            </option>
+                                        ))}
+                                </select>
+                            </div>
+                            <p className="text-xs text-gray-400 col-span-2">
+                                💡 Você pode mover esta aula para outro módulo ou curso usando os seletores acima
+                            </p>
+                        </div>
+                    )}
 
                     <Input
                         label="ID do Vídeo (YouTube) - Opcional"

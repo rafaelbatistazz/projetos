@@ -53,7 +53,7 @@ const AdminLayout = () => {
 
             {/* Sidebar */}
             <aside className={cn(
-                "fixed lg:static inset-y-0 left-0 z-50 w-64 bg-[#1a1f2e] border-r border-gray-700 transform transition-transform duration-200 ease-in-out lg:transform-none",
+                "fixed lg:static inset-y-0 left-0 z-50 w-64 bg-[#1a1f2e] border-r border-gray-700 transform transition-transform duration-200 ease-in-out lg:transform-none flex flex-col",
                 isSidebarOpen ? "translate-x-0" : "-translate-x-full"
             )}>
                 <div className="h-16 flex items-center justify-between px-6 border-b border-gray-700">
@@ -72,7 +72,7 @@ const AdminLayout = () => {
                     </button>
                 </div>
 
-                <nav className="p-4 space-y-1">
+                <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
                     {navItems.map((item) => (
                         <Link
                             key={item.path}
@@ -91,7 +91,7 @@ const AdminLayout = () => {
                     ))}
                 </nav>
 
-                <div className="absolute bottom-0 w-full p-4 border-t border-gray-700">
+                <div className="p-4 border-t border-gray-700">
                     <button
                         onClick={handleLogout}
                         className="flex items-center w-full px-4 py-3 text-sm font-medium text-red-400 rounded-lg hover:bg-red-500/10 hover:text-red-300 transition-colors"
