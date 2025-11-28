@@ -120,4 +120,4 @@ const Home = () => {
     );
 };
 
-export default MemberHome;
+export default Home;
