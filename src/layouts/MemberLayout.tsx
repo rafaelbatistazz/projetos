@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { LogOut } from 'lucide-react';
 
 const MemberLayout = () => {
-    const { logout, userEmail } = useAuth();
+    const { logout, userName } = useAuth();
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -12,9 +12,9 @@ const MemberLayout = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#0f1419]">
+        <div className="min-h-screen bg-background">
             {/* Header */}
-            <header className="bg-[#1a1f2e] border-b border-gray-800 sticky top-0 z-50">
+            <header className="bg-card border-b border-border sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                     <div className="flex items-center cursor-pointer" onClick={() => navigate('/')}>
                         <img
@@ -25,7 +25,9 @@ const MemberLayout = () => {
                     </div>
 
                     <div className="flex items-center space-x-4">
-                        <span className="text-sm text-gray-400 hidden sm:block">{userEmail}</span>
+                        <span className="text-sm text-gray-400 hidden sm:block font-medium">
+                            {userName || 'Membro'}
+                        </span>
                         <button
                             onClick={handleLogout}
                             className="text-gray-400 hover:text-white transition-colors p-2 rounded-full hover:bg-gray-800"

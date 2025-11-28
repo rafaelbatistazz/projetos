@@ -32,8 +32,8 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#0f1419] px-4">
-            <div className="max-w-md w-full space-y-8 bg-[#1a1f2e] p-8 rounded-xl shadow-2xl border border-gray-700">
+        <div className="min-h-screen flex items-center justify-center bg-background px-4">
+            <div className="max-w-md w-full space-y-8 bg-card p-8 rounded-xl shadow-2xl border border-border">
                 <div className="text-center">
                     <div className="mx-auto h-12 w-12 bg-primary flex items-center justify-center rounded-full">
                         <Lock className="h-6 w-6 text-white" />
@@ -57,7 +57,7 @@ const Login = () => {
                                 type="email"
                                 autoComplete="email"
                                 required
-                                className="appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-600 placeholder-gray-500 text-white bg-[#0f1419] focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+                                className="appearance-none rounded-md relative block w-full px-3 py-3 border border-border placeholder-gray-500 text-white bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
                                 placeholder="Seu email de acesso"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}

@@ -13,18 +13,21 @@ export interface Database {
                 Row: {
                     id: string
                     email: string
+                    nome: string | null
                     status_cliente: boolean
                     created_at: string
                 }
                 Insert: {
                     id?: string
                     email: string
+                    nome?: string | null
                     status_cliente?: boolean
                     created_at?: string
                 }
                 Update: {
                     id?: string
                     email?: string
+                    nome?: string | null
                     status_cliente?: boolean
                     created_at?: string
                 }
