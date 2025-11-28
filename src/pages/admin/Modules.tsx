@@ -111,6 +111,12 @@ const Modules = () => {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        if (selectedCourseId) {
+            fetchModules(selectedCourseId);
+        }
+    }, [selectedCourseId]);
+
     const fetchData = async () => {
         setLoading(true);
         try {
