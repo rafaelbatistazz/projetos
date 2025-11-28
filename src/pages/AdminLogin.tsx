@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Loader2, Lock } from 'lucide-react';
 
 const AdminLogin = () => {
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const { adminLogin, isLoading } = useAuth();
@@ -13,12 +14,12 @@ const AdminLogin = () => {
         e.preventDefault();
         setError('');
 
-        if (!password) {
-            setError('Por favor, digite a senha.');
+        if (!email || !password) {
+            setError('Por favor, preencha todos os campos.');
             return;
         }
 
-        const result = await adminLogin(password);
+        const result = await adminLogin(email, password);
         if (result.success) {
             navigate('/admin');
         } else {
@@ -41,10 +42,25 @@ const AdminLogin = () => {
                     </p>
                 </div>
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                    <div className="rounded-md shadow-sm -space-y-px">
+                    <div className="rounded-md shadow-sm space-y-4">
+                        <div>
+                            <label htmlFor="email" className="sr-only">
+                                Email
+                            </label>
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                required
+                                className="appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-600 placeholder-gray-500 text-white bg-[#0f1419] focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+                                placeholder="Email de administrador"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
                         <div>
                             <label htmlFor="password" className="sr-only">
-                                Senha Master
+                                Senha
                             </label>
                             <input
                                 id="password"
@@ -52,7 +68,7 @@ const AdminLogin = () => {
                                 type="password"
                                 required
                                 className="appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-600 placeholder-gray-500 text-white bg-[#0f1419] focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
-                                placeholder="Digite a senha master"
+                                placeholder="Senha"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />

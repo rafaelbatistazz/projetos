@@ -7,7 +7,7 @@ interface AuthContextType {
     isAdmin: boolean;
     isLoading: boolean;
     login: (email: string) => Promise<{ success: boolean; message?: string }>;
-    adminLogin: (password: string) => Promise<{ success: boolean; message?: string }>;
+    adminLogin: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
     logout: () => void;
 }
 
@@ -89,16 +89,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     };
 
-    const adminLogin = async (password: string) => {
-        // Hardcoded password as requested (in env or fixed)
-        const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123'; // Fallback for dev
+    const adminLogin = async (email: string, password: string) => {
+        try {
+            setIsLoading(true);
+            const { data: isValid, error } = await supabase.rpc('verify_admin_credentials', {
+                email_input: email,
+                password_input: password,
+            });
 
-        if (password === ADMIN_PASSWORD) {
-            setIsAdmin(true);
-            localStorage.setItem('advanx_is_admin', 'true');
-            return { success: true };
-        } else {
-            return { success: false, message: 'Senha incorreta.' };
+            if (error) {
+                console.error('Admin login error:', error);
+                return { success: false, message: 'Erro ao verificar credenciais.' };
+            }
+
+            if (isValid) {
+                setIsAdmin(true);
+                localStorage.setItem('advanx_is_admin', 'true');
+                return { success: true };
+            } else {
+                return { success: false, message: 'Credenciais inválidas.' };
+            }
+        } catch (err) {
+            console.error('Unexpected admin login error:', err);
+            return { success: false, message: 'Erro inesperado.' };
+        } finally {
+            setIsLoading(false);
         }
     };
 

@@ -7,6 +7,7 @@ import {
     Layers,
     PlayCircle,
     Users,
+    Settings as SettingsIcon,
     LogOut,
     Menu,
     X
@@ -14,8 +15,8 @@ import {
 import { cn } from '../lib/utils';
 
 const AdminLayout = () => {
-    const { logout } = useAuth();
     const location = useLocation();
+    const { logout } = useAuth();
     const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
@@ -30,6 +31,7 @@ const AdminLayout = () => {
         { path: '/admin/modules', icon: Layers, label: 'Módulos' },
         { path: '/admin/lessons', icon: PlayCircle, label: 'Aulas' },
         { path: '/admin/clients', icon: Users, label: 'Clientes' },
+        { path: '/admin/settings', icon: SettingsIcon, label: 'Configurações' },
     ];
 
     const isActive = (path: string, exact = false) => {

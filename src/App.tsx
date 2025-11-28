@@ -12,6 +12,7 @@ import Modules from './pages/admin/Modules';
 import Lessons from './pages/admin/Lessons';
 
 import Clients from './pages/admin/Clients';
+import Settings from './pages/admin/Settings';
 import MemberLayout from './layouts/MemberLayout';
 import LessonView from './pages/member/LessonView';
 import MemberHome from './pages/member/Home';
@@ -44,6 +45,7 @@ function App() {
               <Route path="lessons" element={<Lessons />} />
 
               <Route path="clients" element={<Clients />} />
+              <Route path="settings" element={<Settings />} />
               {/* Add more admin routes here */}
             </Route>
           </Route>

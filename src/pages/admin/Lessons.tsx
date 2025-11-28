@@ -99,7 +99,11 @@ const Lessons = () => {
     const [saving, setSaving] = useState(false);
 
     const sensors = useSensors(
-        useSensor(PointerSensor),
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 8,
+            },
+        }),
         useSensor(KeyboardSensor, {
             coordinateGetter: sortableKeyboardCoordinates,
         })
@@ -108,6 +112,12 @@ const Lessons = () => {
     useEffect(() => {
         fetchData();
     }, []);
+
+    useEffect(() => {
+        if (selectedCourseId) {
+            fetchModules(selectedCourseId);
+        }
+    }, [selectedCourseId]);
 
     const fetchData = async () => {
         setLoading(true);
