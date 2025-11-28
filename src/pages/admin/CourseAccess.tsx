@@ -140,8 +140,8 @@ const CourseAccess = () => {
             (filterActive === 'active' && client.status_cliente) ||
             (filterActive === 'inactive' && !client.status_cliente);
 
-        const matchesSearch = client.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            client.email.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch = (client.nome?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+            (client.email?.toLowerCase() || '').includes(searchTerm.toLowerCase());
 
         return matchesFilter && matchesSearch;
     });
