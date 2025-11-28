@@ -92,115 +92,111 @@ const Settings = () => {
                     </p>
                 </div>
 
-                <form onSubmit={handleSave} className="p-6 space-y-6">
-                    <div>
-                        <Input
-                            label="URL da Imagem do Banner"
-                            value={config.banner_url}
-                            onChange={(e) => setConfig({ ...config, banner_url: e.target.value })}
-                            placeholder="https://..."
-                        />
-                        <p className="mt-2 text-sm text-gray-400">
-                            💡 <strong>Dimensões recomendadas:</strong> 2070x500px (proporção 4:1) para melhor qualidade em todos os dispositivos
-                        </p>
-                    </div>
+                <form onSubmit={handleSave} className="space-y-8">
+                    <div className="p-6 space-y-6">
+                        <div>
+                            <Input
+                                label="URL da Imagem do Banner"
+                                value={config.banner_url}
+                                onChange={(e) => setConfig({ ...config, banner_url: e.target.value })}
+                                placeholder="https://..."
+                            />
+                            <p className="mt-2 text-sm text-gray-400">
+                                💡 <strong>Dimensões recomendadas:</strong> 2070x500px (proporção 4:1) para melhor qualidade em todos os dispositivos
+                            </p>
+                        </div>
 
-                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                        <Input
-                            label="Título Principal"
-                            value={config.banner_title}
-                            onChange={(e) => setConfig({ ...config, banner_title: e.target.value })}
-                            placeholder="Ex: Bem vindo à Advanx Academy"
-                        />
+                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                            <Input
+                                label="Título Principal"
+                                value={config.banner_title}
+                                onChange={(e) => setConfig({ ...config, banner_title: e.target.value })}
+                                placeholder="Ex: Bem vindo à Advanx Academy"
+                            />
 
-                        <Input
-                            label="Subtítulo"
-                            value={config.banner_subtitle}
-                            onChange={(e) => setConfig({ ...config, banner_subtitle: e.target.value })}
-                            placeholder="Ex: Domine novas habilidades..."
-                        />
-                    </div>
+                            <Input
+                                label="Subtítulo"
+                                value={config.banner_subtitle}
+                                onChange={(e) => setConfig({ ...config, banner_subtitle: e.target.value })}
+                                placeholder="Ex: Domine novas habilidades..."
+                            />
+                        </div>
 
-                    {/* Preview */}
-                    <div className="mt-8">
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Pré-visualização</label>
-                        <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-700 group">
-                            <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent z-10" />
-                            {config.banner_url ? (
-                                <img
-                                    src={config.banner_url}
-                                    alt="Banner Preview"
-                                    className="w-full h-full object-cover"
-                                />
-                            ) : (
-                                <div className="w-full h-full bg-gray-800 flex items-center justify-center text-gray-500">
-                                    Sem imagem
-                                </div>
-                            )}
-                            <div className="absolute inset-0 z-20 flex items-center px-8">
-                                <div className="max-w-lg">
-                                    <h3 className="text-2xl font-bold text-white mb-2">{config.banner_title || 'Título do Banner'}</h3>
-                                    <p className="text-sm text-gray-300">{config.banner_subtitle || 'Subtítulo do banner aparecerá aqui.'}</p>
+                        {/* Preview */}
+                        <div className="mt-8">
+                            <label className="block text-sm font-medium text-gray-300 mb-2">Pré-visualização</label>
+                            <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-700 group">
+                                <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent z-10" />
+                                {config.banner_url ? (
+                                    <img
+                                        src={config.banner_url}
+                                        alt="Banner Preview"
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full bg-gray-800 flex items-center justify-center text-gray-500">
+                                        Sem imagem
+                                    </div>
+                                )}
+                                <div className="absolute inset-0 z-20 flex items-center px-8">
+                                    <div className="max-w-lg">
+                                        <h3 className="text-2xl font-bold text-white mb-2">{config.banner_title || 'Título do Banner'}</h3>
+                                        <p className="text-sm text-gray-300">{config.banner_subtitle || 'Subtítulo do banner aparecerá aqui.'}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex justify-end pt-4">
-                        <Button type="submit" isLoading={saving}>
-                            <Save className="h-4 w-4 mr-2" />
-                            Salvar Alterações
-                        </Button>
-                    </div>
-                </form>
-            </div>
+                    {/* Locked Course CTA Configuration */}
+                    <div className="border-t border-gray-700">
+                        <div className="p-6 border-b border-gray-700">
+                            <h2 className="text-lg font-medium text-white flex items-center gap-2">
+                                🔒 Cursos Bloqueados
+                            </h2>
+                            <p className="mt-1 text-sm text-gray-400">
+                                Configure a mensagem e o botão que aparecem quando um cliente tenta acessar um curso bloqueado.
+                            </p>
+                        </div>
 
-            {/* Locked Course CTA Configuration */}
-            <div className="bg-[#1a1f2e] rounded-xl shadow-lg border border-gray-700 overflow-hidden mt-8">
-                <div className="p-6 border-b border-gray-700">
-                    <h2 className="text-lg font-medium text-white flex items-center gap-2">
-                        🔒 Cursos Bloqueados
-                    </h2>
-                    <p className="mt-1 text-sm text-gray-400">
-                        Configure a mensagem e o botão que aparecem quando um cliente tenta acessar um curso bloqueado.
-                    </p>
-                </div>
+                        <div className="p-6 space-y-6">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-300 mb-2">
+                                    Mensagem de Bloqueio
+                                </label>
+                                <textarea
+                                    value={config.locked_course_message}
+                                    onChange={(e) => setConfig({ ...config, locked_course_message: e.target.value })}
+                                    placeholder="Ex: Este curso não está disponível no seu plano atual."
+                                    className="w-full px-4 py-3 bg-[#0f1419] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                                    rows={3}
+                                />
+                            </div>
 
-                <form onSubmit={handleSave} className="p-6 space-y-6">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                            Mensagem de Bloqueio
-                        </label>
-                        <textarea
-                            value={config.locked_course_message}
-                            onChange={(e) => setConfig({ ...config, locked_course_message: e.target.value })}
-                            placeholder="Ex: Este curso não está disponível no seu plano atual."
-                            className="w-full px-4 py-3 bg-[#0f1419] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                            rows={3}
-                        />
-                    </div>
+                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                <Input
+                                    label="Texto do Botão"
+                                    value={config.locked_course_button_text}
+                                    onChange={(e) => setConfig({ ...config, locked_course_button_text: e.target.value })}
+                                    placeholder="Ex: Falar com Suporte"
+                                />
 
-                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                        <Input
-                            label="Texto do Botão"
-                            value={config.locked_course_button_text}
-                            onChange={(e) => setConfig({ ...config, locked_course_button_text: e.target.value })}
-                            placeholder="Ex: Falar com Suporte"
-                        />
+                                <Input
+                                    label="Link do Botão"
+                                    value={config.locked_course_button_url}
+                                    onChange={(e) => setConfig({ ...config, locked_course_button_url: e.target.value })}
+                                    placeholder="Ex: https://wa.me/5511999999999"
+                                />
+                            </div>
 
-                        <Input
-                            label="Link do Botão"
-                            value={config.locked_course_button_url}
-                            onChange={(e) => setConfig({ ...config, locked_course_button_url: e.target.value })}
-                            placeholder="Ex: https://wa.me/5511999999999"
-                        />
-                    </div>
-
-                    <div className="flex justify-end pt-4">
-                        <Button type="submit" isLoading={saving}>
-                            <Save className="h-4 w-4 mr-2" />
-                            Salvar Alterações
-                        </Button>
+                            {/* Single Save Button at the end */}
+                            <div className="flex justify-end pt-4 border-t border-gray-700 mt-6">
+                                <Button type="submit" isLoading={saving}>
+                                    <Save className="h-4 w-4 mr-2" />
+                                    Salvar Todas as Configurações
+                                </Button>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
