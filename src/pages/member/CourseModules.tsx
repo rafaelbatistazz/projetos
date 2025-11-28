@@ -11,6 +11,7 @@ type Lesson = Database['public']['Tables']['lessons']['Row'];
 
 interface ModuleWithLessons extends Module {
     lessons: Lesson[];
+    thumbnail_url?: string | null;
 }
 
 const CourseModules = () => {

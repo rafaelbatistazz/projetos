@@ -19,7 +19,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoId, className, onEnd }) 
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [showControls, setShowControls] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
-    const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const controlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const opts = {
         height: '100%',

@@ -9,7 +9,6 @@ import { cn } from '../../lib/utils';
 
 type Lesson = Database['public']['Tables']['lessons']['Row'];
 type Module = Database['public']['Tables']['modules']['Row'];
-type Course = Database['public']['Tables']['courses']['Row'];
 
 interface ModuleWithLessons extends Module {
     lessons: Lesson[];
