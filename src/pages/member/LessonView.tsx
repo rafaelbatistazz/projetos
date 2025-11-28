@@ -7,7 +7,6 @@ import VideoPlayer from '../../components/VideoPlayer';
 import Button from '../../components/ui/Button';
 import { ChevronLeft, ChevronRight, Loader2, CheckCircle, PlayCircle, Menu, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 
 type Lesson = Database['public']['Tables']['lessons']['Row'];
@@ -24,7 +23,8 @@ const LessonView = () => {
     const [lesson, setLesson] = useState<Lesson | null>(null);
     const [modules, setModules] = useState<ModuleWithLessons[]>([]);
     const [loading, setLoading] = useState(true);
-    const [sidebarOpen, setSidebarOpen] = useState(true);
+    // Initialize sidebar based on screen width to avoid flash/black screen issues
+    const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 768);
     const [nextLessonId, setNextLessonId] = useState<string | null>(null);
     const [prevLessonId, setPrevLessonId] = useState<string | null>(null);
     const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set());
@@ -49,6 +49,19 @@ const LessonView = () => {
             setIsCompleted(false);
         }
     }, [lesson, completedLessons]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth >= 768) {
+                setSidebarOpen(true);
+            } else {
+                setSidebarOpen(false);
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const fetchLessonAndContext = async (id: string) => {
         setLoading(true);
@@ -199,13 +212,6 @@ const LessonView = () => {
 
     if (!lesson) return null;
 
-    useEffect(() => {
-        // Close sidebar on mobile by default
-        if (window.innerWidth < 768) {
-            setSidebarOpen(false);
-        }
-    }, []);
-
     return (
         <div
             className="flex h-[calc(100vh-4rem)] bg-background overflow-hidden select-none relative"
@@ -222,11 +228,7 @@ const LessonView = () => {
             {/* Main Content */}
             <div className="flex-1 overflow-y-auto">
                 <div className="max-w-5xl mx-auto px-4 py-6">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                    >
+                    <div>
                         {lesson.youtube_video_id && (
                             <div className="aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-800 mb-6">
                                 <VideoPlayer videoId={lesson.youtube_video_id} />
@@ -297,7 +299,7 @@ const LessonView = () => {
                                 </div>
                             </div>
                         )}
-                    </motion.div>
+                    </div>
                 </div>
             </div>
 
