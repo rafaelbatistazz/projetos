@@ -23,10 +23,11 @@ const Home = () => {
     });
 
     const [bannerConfig, setBannerConfig] = useState({
-        url: 'https://images.unsplash.com/photo-1555421689-491a97ff2040?q=80&w=2070&auto=format&fit=crop',
-        title: 'Bem vindo à Advanx Academy',
-        subtitle: 'Domine novas habilidades e alcance seus objetivos com nossos cursos exclusivos.'
+        url: '',
+        title: '',
+        subtitle: ''
     });
+    const [bannerLoading, setBannerLoading] = useState(true);
 
     useEffect(() => {
         fetchCourses();
@@ -76,19 +77,42 @@ const Home = () => {
     };
 
     const fetchBannerConfig = async () => {
+        setBannerLoading(true);
         try {
             const { data } = await supabase.from('site_config').select('*');
             if (data) {
-                const newConfig = { ...bannerConfig };
+                const newConfig = {
+                    url: '',
+                    title: '',
+                    subtitle: ''
+                };
                 data.forEach((item: any) => {
-                    if (item.key === 'banner_url') newConfig.url = item.value;
-                    if (item.key === 'banner_title') newConfig.title = item.value;
-                    if (item.key === 'banner_subtitle') newConfig.subtitle = item.value;
+                    if (item.key === 'banner_url' && item.value) newConfig.url = item.value;
+                    if (item.key === 'banner_title' && item.value) newConfig.title = item.value;
+                    if (item.key === 'banner_subtitle' && item.value) newConfig.subtitle = item.value;
                 });
-                setBannerConfig(newConfig);
+                // Only update if we have at least a URL
+                if (newConfig.url) {
+                    setBannerConfig(newConfig);
+                } else {
+                    // Fallback to default if no config found
+                    setBannerConfig({
+                        url: 'https://images.unsplash.com/photo-1555421689-491a97ff2040?q=80&w=2070&auto=format&fit=crop',
+                        title: 'Bem vindo à Advanx Academy',
+                        subtitle: 'Domine novas habilidades e alcance seus objetivos com nossos cursos exclusivos.'
+                    });
+                }
             }
         } catch (error) {
             console.error('Error fetching banner config:', error);
+            // Fallback on error
+            setBannerConfig({
+                url: 'https://images.unsplash.com/photo-1555421689-491a97ff2040?q=80&w=2070&auto=format&fit=crop',
+                title: 'Bem vindo à Advanx Academy',
+                subtitle: 'Domine novas habilidades e alcance seus objetivos com nossos cursos exclusivos.'
+            });
+        } finally {
+            setBannerLoading(false);
         }
     };
 
@@ -134,40 +158,42 @@ const Home = () => {
     return (
         <div className="min-h-screen bg-background pb-12">
             {/* Banner Section */}
-            <div className="w-full h-[500px] relative overflow-hidden mb-12 group">
-                <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent z-10" />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10" />
+            {!bannerLoading && bannerConfig.url && (
+                <div className="w-full h-[500px] relative overflow-hidden mb-12 group">
+                    <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent z-10" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10" />
 
-                <motion.img
-                    initial={{ scale: 1.1 }}
-                    animate={{ scale: 1 }}
-                    transition={{ duration: 10 }}
-                    src={bannerConfig.url}
-                    alt="Banner"
-                    className="w-full h-full object-cover"
-                />
+                    <motion.img
+                        initial={{ scale: 1.1 }}
+                        animate={{ scale: 1 }}
+                        transition={{ duration: 10 }}
+                        src={bannerConfig.url}
+                        alt="Banner"
+                        className="w-full h-full object-cover"
+                    />
 
-                <div className="absolute inset-0 z-20 flex items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="max-w-3xl">
-                        <motion.h1
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.2 }}
-                            className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight"
-                        >
-                            {bannerConfig.title}
-                        </motion.h1>
-                        <motion.p
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.4 }}
-                            className="text-xl text-gray-300 mb-8 max-w-2xl leading-relaxed"
-                        >
-                            {bannerConfig.subtitle}
-                        </motion.p>
+                    <div className="absolute inset-0 z-20 flex items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="max-w-3xl">
+                            <motion.h1
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.2 }}
+                                className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight"
+                            >
+                                {bannerConfig.title}
+                            </motion.h1>
+                            <motion.p
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.4 }}
+                                className="text-xl text-gray-300 mb-8 max-w-2xl leading-relaxed"
+                            >
+                                {bannerConfig.subtitle}
+                            </motion.p>
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <motion.div

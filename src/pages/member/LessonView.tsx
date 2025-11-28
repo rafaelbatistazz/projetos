@@ -305,17 +305,19 @@ const LessonView = () => {
 
             {/* Sidebar Playlist */}
             <div className={cn(
-                "w-80 bg-card border-l border-border flex flex-col transition-all duration-300 absolute md:relative right-0 h-full z-40 shadow-2xl md:shadow-none",
+                "w-80 bg-card border-l border-border flex flex-col transition-all duration-300 absolute md:relative right-0 z-40 shadow-2xl md:shadow-none",
+                "h-full md:h-full", // Ensure full height on all screens
+                "max-h-screen md:max-h-none", // Limit height on mobile to viewport
                 sidebarOpen ? "translate-x-0" : "translate-x-full md:translate-x-0 md:w-0 md:border-none"
             )}>
-                <div className="p-4 border-b border-border flex items-center justify-between bg-card">
+                <div className="p-4 border-b border-border flex items-center justify-between bg-card flex-shrink-0">
                     <h2 className="font-semibold text-white">Conteúdo do Curso</h2>
                     <button onClick={() => setSidebarOpen(false)} className="md:hidden text-gray-400 hover:text-white">
                         <X className="h-5 w-5" />
                     </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto">
+                <div className="flex-1 overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
                     {modules.map((module) => (
                         <div key={module.id} className="border-b border-border">
                             <div className="px-4 py-3 bg-muted/30">
@@ -369,13 +371,14 @@ const LessonView = () => {
                 </div>
             </div>
 
-            {/* Toggle Sidebar Button (Mobile) */}
+            {/* Toggle Sidebar Button (Mobile) with Pulse Animation */}
             <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 className={cn(
                     "absolute top-4 right-4 z-50 p-2 bg-card rounded-lg text-white shadow-lg hover:bg-gray-800 md:hidden border border-border transition-opacity duration-300",
-                    sidebarOpen ? "opacity-0 pointer-events-none" : "opacity-100"
+                    sidebarOpen ? "opacity-0 pointer-events-none" : "opacity-100 animate-pulse"
                 )}
+                aria-label="Abrir lista de aulas"
             >
                 <Menu className="h-5 w-5" />
             </button>
