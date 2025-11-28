@@ -212,17 +212,21 @@ const Courses = () => {
         e.preventDefault();
         setSaving(true);
 
+        const courseData = {
+            title: formData.title,
+            description: formData.description || null,
+            thumbnail_url: formData.thumbnail_url?.trim() || null,
+            order_position: formData.order_position,
+            status_curso: formData.status_curso,
+        };
+
+        console.log('Saving course:', courseData);
+
         try {
             if (editingCourse) {
                 const { error } = await supabase
                     .from('courses')
-                    .update({
-                        title: formData.title,
-                        description: formData.description || null,
-                        thumbnail_url: formData.thumbnail_url || null,
-                        order_position: formData.order_position,
-                        status_curso: formData.status_curso,
-                    } as any)
+                    .update(courseData)
                     .eq('id', editingCourse.id);
 
                 if (error) throw error;
@@ -230,13 +234,7 @@ const Courses = () => {
             } else {
                 const { error } = await supabase
                     .from('courses')
-                    .insert([{
-                        title: formData.title,
-                        description: formData.description || null,
-                        thumbnail_url: formData.thumbnail_url || null,
-                        order_position: formData.order_position,
-                        status_curso: formData.status_curso,
-                    }] as any);
+                    .insert([courseData]);
 
                 if (error) throw error;
                 toast.success('Curso criado com sucesso');
