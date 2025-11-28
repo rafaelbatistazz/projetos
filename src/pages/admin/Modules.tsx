@@ -133,9 +133,9 @@ const Modules = () => {
 
             fetchModules(selectedCourseId);
             handleCloseModal();
-        } catch (error) {
-            toast.error('Erro ao salvar módulo');
-            console.error(error);
+        } catch (error: any) {
+            console.error('Error saving module:', error);
+            toast.error(`Erro ao salvar módulo: ${error.message || error.error_description || 'Erro desconhecido'}`);
         } finally {
             setSaving(false);
         }
@@ -163,8 +163,8 @@ const Modules = () => {
         <div>
             <div className="sm:flex sm:items-center">
                 <div className="sm:flex-auto">
-                    <h1 className="text-xl font-semibold text-gray-900">Módulos</h1>
-                    <p className="mt-2 text-sm text-gray-700">
+                    <h1 className="text-2xl font-bold text-white">Módulos</h1>
+                    <p className="mt-2 text-sm text-gray-400">
                         Gerencie os módulos de cada curso.
                     </p>
                 </div>
@@ -177,12 +177,12 @@ const Modules = () => {
             </div>
 
             <div className="mt-6">
-                <label htmlFor="course-select" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="course-select" className="block text-sm font-medium text-gray-300 mb-2">
                     Selecione o Curso
                 </label>
                 <select
                     id="course-select"
-                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md"
+                    className="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-600 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-[#1a1f2e] text-white"
                     value={selectedCourseId}
                     onChange={(e) => setSelectedCourseId(e.target.value)}
                 >
@@ -198,17 +198,17 @@ const Modules = () => {
             <div className="mt-8 flex flex-col">
                 <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                        <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                            <table className="min-w-full divide-y divide-gray-300">
-                                <thead className="bg-gray-50">
+                        <div className="overflow-hidden shadow-xl ring-1 ring-gray-700 md:rounded-lg">
+                            <table className="min-w-full divide-y divide-gray-700">
+                                <thead className="bg-[#1a1f2e]">
                                     <tr>
-                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-200">
                                             Ordem
                                         </th>
-                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-200">
                                             Título
                                         </th>
-                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-200">
                                             Descrição
                                         </th>
                                         <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
@@ -216,39 +216,39 @@ const Modules = () => {
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-200 bg-white">
+                                <tbody className="divide-y divide-gray-700 bg-[#0f1419]">
                                     {loading ? (
                                         <tr>
-                                            <td colSpan={4} className="text-center py-4">Carregando...</td>
+                                            <td colSpan={4} className="text-center py-8 text-gray-400">Carregando...</td>
                                         </tr>
                                     ) : modules.length === 0 ? (
                                         <tr>
-                                            <td colSpan={4} className="text-center py-4 text-gray-500">
+                                            <td colSpan={4} className="text-center py-8 text-gray-400">
                                                 {selectedCourseId ? 'Nenhum módulo encontrado.' : 'Selecione um curso para ver os módulos.'}
                                             </td>
                                         </tr>
                                     ) : (
                                         modules.map((module) => (
-                                            <tr key={module.id}>
-                                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                            <tr key={module.id} className="hover:bg-gray-800/50 transition-colors">
+                                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
                                                     {module.order_position}
                                                 </td>
-                                                <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-900">
+                                                <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-white">
                                                     {module.title}
                                                 </td>
-                                                <td className="px-3 py-4 text-sm text-gray-500 max-w-xs truncate">
+                                                <td className="px-3 py-4 text-sm text-gray-300 max-w-xs truncate">
                                                     {module.description}
                                                 </td>
                                                 <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                                     <button
                                                         onClick={() => handleOpenModal(module)}
-                                                        className="text-indigo-600 hover:text-indigo-900 mr-4"
+                                                        className="text-blue-400 hover:text-blue-300 mr-4 transition-colors"
                                                     >
                                                         <Pencil className="h-4 w-4" />
                                                     </button>
                                                     <button
                                                         onClick={() => handleDelete(module.id)}
-                                                        className="text-red-600 hover:text-red-900"
+                                                        className="text-red-400 hover:text-red-300 transition-colors"
                                                     >
                                                         <Trash2 className="h-4 w-4" />
                                                     </button>
@@ -277,23 +277,16 @@ const Modules = () => {
                     />
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-gray-300 mb-1">
                             Descrição
                         </label>
                         <textarea
-                            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                            className="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 text-white bg-[#0f1419] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                             rows={3}
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                         />
                     </div>
-
-                    <Input
-                        label="Ordem de Exibição"
-                        type="number"
-                        value={formData.order_position}
-                        onChange={(e) => setFormData({ ...formData, order_position: parseInt(e.target.value) || 0 })}
-                    />
 
                     <div className="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
                         <Button type="submit" isLoading={saving} className="w-full sm:col-start-2">
