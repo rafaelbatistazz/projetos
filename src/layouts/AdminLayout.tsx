@@ -10,7 +10,8 @@ import {
     Settings as SettingsIcon,
     LogOut,
     Menu,
-    X
+    X,
+    Lock as LockIcon
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -31,6 +32,7 @@ const AdminLayout = () => {
         { path: '/admin/modules', icon: Layers, label: 'Módulos' },
         { path: '/admin/lessons', icon: PlayCircle, label: 'Aulas' },
         { path: '/admin/clients', icon: Users, label: 'Clientes' },
+        { path: '/admin/course-access', icon: LockIcon, label: 'Gerenciar Acessos' },
         { path: '/admin/settings', icon: SettingsIcon, label: 'Configurações' },
     ];
 
