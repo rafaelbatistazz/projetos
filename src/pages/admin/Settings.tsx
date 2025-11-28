@@ -14,7 +14,11 @@ const Settings = () => {
         banner_subtitle: '',
         locked_course_message: '',
         locked_course_button_text: '',
-        locked_course_button_url: ''
+        locked_course_button_url: '',
+        social_instagram: '',
+        social_facebook: '',
+        social_linkedin: '',
+        social_tiktok: ''
     });
 
     useEffect(() => {
@@ -38,6 +42,10 @@ const Settings = () => {
                     if (item.key === 'locked_course_message') newConfig.locked_course_message = item.value;
                     if (item.key === 'locked_course_button_text') newConfig.locked_course_button_text = item.value;
                     if (item.key === 'locked_course_button_url') newConfig.locked_course_button_url = item.value;
+                    if (item.key === 'social_instagram') newConfig.social_instagram = item.value;
+                    if (item.key === 'social_facebook') newConfig.social_facebook = item.value;
+                    if (item.key === 'social_linkedin') newConfig.social_linkedin = item.value;
+                    if (item.key === 'social_tiktok') newConfig.social_tiktok = item.value;
                 });
                 setConfig(newConfig);
             }
@@ -62,6 +70,10 @@ const Settings = () => {
                 supabase.rpc('update_site_config', { config_key: 'locked_course_message', config_value: config.locked_course_message }),
                 supabase.rpc('update_site_config', { config_key: 'locked_course_button_text', config_value: config.locked_course_button_text }),
                 supabase.rpc('update_site_config', { config_key: 'locked_course_button_url', config_value: config.locked_course_button_url }),
+                supabase.rpc('update_site_config', { config_key: 'social_instagram', config_value: config.social_instagram }),
+                supabase.rpc('update_site_config', { config_key: 'social_facebook', config_value: config.social_facebook }),
+                supabase.rpc('update_site_config', { config_key: 'social_linkedin', config_value: config.social_linkedin }),
+                supabase.rpc('update_site_config', { config_key: 'social_tiktok', config_value: config.social_tiktok }),
             ]);
 
             toast.success('Configurações salvas com sucesso!');
@@ -188,14 +200,53 @@ const Settings = () => {
                                     placeholder="Ex: https://wa.me/5511999999999"
                                 />
                             </div>
+                        </div>
+                    </div>
 
-                            {/* Single Save Button at the end */}
-                            <div className="flex justify-end pt-4 border-t border-gray-700 mt-6">
-                                <Button type="submit" isLoading={saving}>
-                                    <Save className="h-4 w-4 mr-2" />
-                                    Salvar Todas as Configurações
-                                </Button>
-                            </div>
+                    {/* Social Media Configuration */}
+                    <div className="border-t border-gray-700">
+                        <div className="p-6 border-b border-gray-700">
+                            <h2 className="text-lg font-medium text-white flex items-center gap-2">
+                                🌐 Redes Sociais
+                            </h2>
+                            <p className="mt-1 text-sm text-gray-400">
+                                Configure os links das suas redes sociais para aparecerem no topo da área do aluno.
+                            </p>
+                        </div>
+
+                        <div className="p-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+                            <Input
+                                label="Instagram"
+                                value={config.social_instagram}
+                                onChange={(e) => setConfig({ ...config, social_instagram: e.target.value })}
+                                placeholder="https://instagram.com/seu_perfil"
+                            />
+                            <Input
+                                label="Facebook"
+                                value={config.social_facebook}
+                                onChange={(e) => setConfig({ ...config, social_facebook: e.target.value })}
+                                placeholder="https://facebook.com/sua_pagina"
+                            />
+                            <Input
+                                label="LinkedIn"
+                                value={config.social_linkedin}
+                                onChange={(e) => setConfig({ ...config, social_linkedin: e.target.value })}
+                                placeholder="https://linkedin.com/company/sua_empresa"
+                            />
+                            <Input
+                                label="TikTok"
+                                value={config.social_tiktok}
+                                onChange={(e) => setConfig({ ...config, social_tiktok: e.target.value })}
+                                placeholder="https://tiktok.com/@seu_perfil"
+                            />
+                        </div>
+
+                        {/* Single Save Button at the end */}
+                        <div className="flex justify-end pt-4 border-t border-gray-700 mt-6 mx-6 mb-6">
+                            <Button type="submit" isLoading={saving}>
+                                <Save className="h-4 w-4 mr-2" />
+                                Salvar Todas as Configurações
+                            </Button>
                         </div>
                     </div>
                 </form>
