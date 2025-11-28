@@ -16,6 +16,7 @@ const Clients = () => {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [saving, setSaving] = useState(false);
+    const [filterActive, setFilterActive] = useState<'all' | 'active' | 'inactive'>('all');
 
     useEffect(() => {
         fetchClients();
@@ -107,6 +108,13 @@ const Clients = () => {
         }
     };
 
+    const filteredClients = clients.filter(client => {
+        if (filterActive === 'all') return true;
+        if (filterActive === 'active') return client.status_cliente;
+        if (filterActive === 'inactive') return !client.status_cliente;
+        return true;
+    });
+
     return (
         <div>
             {/* ... (header remains same) ... */}
@@ -125,7 +133,38 @@ const Clients = () => {
                 </div>
             </div>
 
-            <div className="mt-8 flex flex-col">
+            {/* Filters */}
+            <div className="mt-8 flex gap-2">
+                <button
+                    onClick={() => setFilterActive('all')}
+                    className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${filterActive === 'all'
+                        ? 'bg-primary text-white'
+                        : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                        }`}
+                >
+                    Todos
+                </button>
+                <button
+                    onClick={() => setFilterActive('active')}
+                    className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${filterActive === 'active'
+                        ? 'bg-green-600 text-white'
+                        : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                        }`}
+                >
+                    Ativos
+                </button>
+                <button
+                    onClick={() => setFilterActive('inactive')}
+                    className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${filterActive === 'inactive'
+                        ? 'bg-red-600 text-white'
+                        : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                        }`}
+                >
+                    Inativos
+                </button>
+            </div>
+
+            <div className="mt-4 flex flex-col">
                 <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                         <div className="overflow-hidden shadow-xl ring-1 ring-gray-700 md:rounded-lg">
@@ -154,12 +193,12 @@ const Clients = () => {
                                         <tr>
                                             <td colSpan={5} className="text-center py-8 text-gray-400">Carregando...</td>
                                         </tr>
-                                    ) : clients.length === 0 ? (
+                                    ) : filteredClients.length === 0 ? (
                                         <tr>
                                             <td colSpan={5} className="text-center py-8 text-gray-400">Nenhum cliente encontrado.</td>
                                         </tr>
                                     ) : (
-                                        clients.map((client) => (
+                                        filteredClients.map((client) => (
                                             <tr key={client.id} className="hover:bg-gray-800/50 transition-colors">
                                                 <td className="whitespace-nowrap px-3 py-4 text-sm font-medium text-white">
                                                     {client.nome || '-'}

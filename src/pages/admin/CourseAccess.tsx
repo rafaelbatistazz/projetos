@@ -7,7 +7,7 @@ import Button from '../../components/ui/Button';
 interface Client {
     email: string;
     nome: string;
-    ativo: boolean;
+    status_cliente: boolean;
 }
 
 interface Course {
@@ -43,7 +43,7 @@ const CourseAccess = () => {
     const fetchData = async () => {
         try {
             const [clientsRes, coursesRes] = await Promise.all([
-                supabase.from('clientes').select('email, nome, ativo').order('nome'),
+                supabase.from('clientes').select('email, nome, status_cliente').order('nome'),
                 supabase.from('courses').select('id, title').order('title')
             ]);
 
@@ -137,8 +137,8 @@ const CourseAccess = () => {
 
     const filteredClients = clients.filter(client => {
         const matchesFilter = filterActive === 'all' ||
-            (filterActive === 'active' && client.ativo) ||
-            (filterActive === 'inactive' && !client.ativo);
+            (filterActive === 'active' && client.status_cliente) ||
+            (filterActive === 'inactive' && !client.status_cliente);
 
         const matchesSearch = client.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
             client.email.toLowerCase().includes(searchTerm.toLowerCase());
@@ -229,11 +229,11 @@ const CourseAccess = () => {
                                                 <p className="text-sm font-medium text-white truncate">{client.nome}</p>
                                                 <p className="text-xs text-gray-400 truncate">{client.email}</p>
                                             </div>
-                                            <span className={`ml-2 px-2 py-1 text-xs font-medium rounded-full ${client.ativo
+                                            <span className={`ml-2 px-2 py-1 text-xs font-medium rounded-full ${client.status_cliente
                                                 ? 'bg-green-600/20 text-green-400'
                                                 : 'bg-red-600/20 text-red-400'
                                                 }`}>
-                                                {client.ativo ? 'Ativo' : 'Inativo'}
+                                                {client.status_cliente ? 'Ativo' : 'Inativo'}
                                             </span>
                                         </div>
                                     </button>
