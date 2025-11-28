@@ -193,10 +193,8 @@ const LessonView = () => {
                         <Button
                             onClick={handleLessonComplete}
                             className={cn(
-                                "w-full md:w-auto transition-all duration-300",
-                                isCompleted
-                                    ? "bg-green-600 hover:bg-green-700 text-white border-green-500"
-                                    : "bg-primary hover:bg-primary/90 text-white"
+                                "w-full",
+                                isCompleted ? "bg-green-600 hover:bg-green-700" : "bg-primary hover:bg-primary/90"
                             )}
                         >
                             {isCompleted ? (
@@ -205,7 +203,10 @@ const LessonView = () => {
                                     Concluída
                                 </>
                             ) : (
-                                "Concluir Aula"
+                                <>
+                                    <CheckCircle className="h-4 w-4 mr-2" />
+                                    Concluir Aula
+                                </>
                             )}
                         </Button>
                     </div>
@@ -225,7 +226,7 @@ const LessonView = () => {
                             variant="secondary"
                             onClick={() => prevLessonId && navigate(`/lesson/${prevLessonId}`)}
                             disabled={!prevLessonId}
-                            className="bg-card hover:bg-gray-800"
+                            className="bg-gray-700 hover:bg-gray-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             <ChevronLeft className="h-4 w-4 mr-2" />
                             Anterior
@@ -234,7 +235,7 @@ const LessonView = () => {
                             variant="secondary"
                             onClick={() => nextLessonId && navigate(`/lesson/${nextLessonId}`)}
                             disabled={!nextLessonId}
-                            className="bg-card hover:bg-gray-800"
+                            className="bg-gray-700 hover:bg-gray-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Próxima
                             <ChevronRight className="h-4 w-4 ml-2" />

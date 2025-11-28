@@ -84,12 +84,17 @@ const Settings = () => {
                 </div>
 
                 <form onSubmit={handleSave} className="p-6 space-y-6">
-                    <Input
-                        label="URL da Imagem do Banner"
-                        value={config.banner_url}
-                        onChange={(e) => setConfig({ ...config, banner_url: e.target.value })}
-                        placeholder="https://..."
-                    />
+                    <div>
+                        <Input
+                            label="URL da Imagem do Banner"
+                            value={config.banner_url}
+                            onChange={(e) => setConfig({ ...config, banner_url: e.target.value })}
+                            placeholder="https://..."
+                        />
+                        <p className="mt-2 text-sm text-gray-400">
+                            💡 <strong>Dimensões recomendadas:</strong> 2070x500px (proporção 4:1) para melhor qualidade em todos os dispositivos
+                        </p>
+                    </div>
 
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                         <Input
