@@ -55,7 +55,7 @@ function App() {
           {/* Catch all */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-        <Toaster position="top-right" />
+        <Toaster position="top-center" richColors />
       </Router>
     </AuthProvider>
   );

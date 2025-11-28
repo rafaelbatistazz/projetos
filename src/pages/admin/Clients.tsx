@@ -16,7 +16,7 @@ const Clients = () => {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [saving, setSaving] = useState(false);
-    const [filterActive, setFilterActive] = useState<'all' | 'active' | 'inactive'>('all');
+    const [filterActive, setFilterActive] = useState<'all' | 'active' | 'inactive'>('active');
 
     useEffect(() => {
         fetchClients();
