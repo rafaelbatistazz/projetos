@@ -137,9 +137,17 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoId, className, onEnd }) 
             <YouTube
                 videoId={videoId}
                 opts={opts}
-                className="absolute inset-0 w-full h-full pointer-events-none" // Disable interaction with iframe
+                className="absolute inset-0 w-full h-full pointer-events-none"
                 onReady={onReady}
                 onStateChange={onStateChange}
+            />
+
+            {/* Black overlay to hide YouTube branding - only visible when not hovering */}
+            <div
+                className={cn(
+                    "absolute top-0 right-0 w-32 h-20 bg-black z-5 transition-opacity duration-300",
+                    showControls ? "opacity-0" : "opacity-100"
+                )}
             />
 
             {/* Click overlay to toggle play */}

@@ -182,18 +182,33 @@ const LessonView = () => {
                         </div>
                     )}
 
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                        <div>
-                            <h1 className="text-2xl font-bold text-white mb-2">{lesson.title}</h1>
-                            <p className="text-gray-400">
-                                {(lesson as any).modules?.title}
-                            </p>
+                    {/* Action Buttons - Compact Layout */}
+                    <div className="flex items-center justify-between gap-4 mt-6">
+                        <div className="flex items-center gap-3">
+                            <Button
+                                variant="secondary"
+                                onClick={() => prevLessonId && navigate(`/lesson/${prevLessonId}`)}
+                                disabled={!prevLessonId}
+                                className="bg-gray-700 hover:bg-gray-600 text-white disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2"
+                            >
+                                <ChevronLeft className="h-4 w-4 mr-1" />
+                                Anterior
+                            </Button>
+                            <Button
+                                variant="secondary"
+                                onClick={() => nextLessonId && navigate(`/lesson/${nextLessonId}`)}
+                                disabled={!nextLessonId}
+                                className="bg-gray-700 hover:bg-gray-600 text-white disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2"
+                            >
+                                Próxima
+                                <ChevronRight className="h-4 w-4 ml-1" />
+                            </Button>
                         </div>
 
                         <Button
                             onClick={handleLessonComplete}
                             className={cn(
-                                "w-full",
+                                "px-6 py-2",
                                 isCompleted ? "bg-green-600 hover:bg-green-700" : "bg-primary hover:bg-primary/90"
                             )}
                         >
@@ -211,6 +226,13 @@ const LessonView = () => {
                         </Button>
                     </div>
 
+                    <div className="mt-8 mb-8">
+                        <h1 className="text-2xl font-bold text-white mb-2">{lesson.title}</h1>
+                        <p className="text-gray-400">
+                            {(lesson as any).modules?.title}
+                        </p>
+                    </div>
+
                     {lesson.support_text && (
                         <div className="bg-card rounded-xl p-6 border border-border">
                             <h3 className="text-lg font-semibold text-white mb-4">Material de Apoio</h3>
@@ -219,28 +241,6 @@ const LessonView = () => {
                             </div>
                         </div>
                     )}
-
-                    {/* Navigation Buttons */}
-                    <div className="flex justify-between mt-8 pt-8 border-t border-gray-800">
-                        <Button
-                            variant="secondary"
-                            onClick={() => prevLessonId && navigate(`/lesson/${prevLessonId}`)}
-                            disabled={!prevLessonId}
-                            className="bg-gray-700 hover:bg-gray-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            <ChevronLeft className="h-4 w-4 mr-2" />
-                            Anterior
-                        </Button>
-                        <Button
-                            variant="secondary"
-                            onClick={() => nextLessonId && navigate(`/lesson/${nextLessonId}`)}
-                            disabled={!nextLessonId}
-                            className="bg-gray-700 hover:bg-gray-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            Próxima
-                            <ChevronRight className="h-4 w-4 ml-2" />
-                        </Button>
-                    </div>
                 </div>
             </div>
 
