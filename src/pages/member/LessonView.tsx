@@ -7,6 +7,8 @@ import VideoPlayer from '../../components/VideoPlayer';
 import Button from '../../components/ui/Button';
 import { ChevronLeft, ChevronRight, Loader2, CheckCircle, PlayCircle, Menu, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 type Lesson = Database['public']['Tables']['lessons']['Row'];
 type Module = Database['public']['Tables']['modules']['Row'];
@@ -152,10 +154,39 @@ const LessonView = () => {
             if (!error) {
                 setIsCompleted(true);
                 setCompletedLessons(prev => new Set(prev).add(lesson.id));
-                // Optional: Auto-advance
-                // if (nextLessonId) navigate(`/lesson/${nextLessonId}`);
+
+                // Auto-advance to next lesson
+                if (nextLessonId) {
+                    toast.success('Aula concluída! Indo para a próxima...');
+                    setTimeout(() => navigate(`/lesson/${nextLessonId}`), 1000);
+                } else {
+                    toast.success('Aula concluída!');
+                }
             }
         }
+    };
+
+    // Helper to render text with clickable links
+    const renderSupportText = (text: string) => {
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        const parts = text.split(urlRegex);
+
+        return parts.map((part, i) => {
+            if (part.match(urlRegex)) {
+                return (
+                    <a
+                        key={i}
+                        href={part}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline break-all"
+                    >
+                        {part}
+                    </a>
+                );
+            }
+            return part;
+        });
     };
 
     if (loading) {
@@ -176,71 +207,82 @@ const LessonView = () => {
             {/* Main Content */}
             <div className="flex-1 overflow-y-auto">
                 <div className="max-w-5xl mx-auto px-4 py-6">
-                    {lesson.youtube_video_id && (
-                        <div className="aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-800 mb-6">
-                            <VideoPlayer videoId={lesson.youtube_video_id} />
-                        </div>
-                    )}
-
-                    {/* Action Buttons - Compact Layout */}
-                    <div className="flex items-center justify-between gap-4 mt-6">
-                        <div className="flex items-center gap-3">
-                            <Button
-                                variant="secondary"
-                                onClick={() => prevLessonId && navigate(`/lesson/${prevLessonId}`)}
-                                disabled={!prevLessonId}
-                                className="bg-gray-700 hover:bg-gray-600 text-white disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2"
-                            >
-                                <ChevronLeft className="h-4 w-4 mr-1" />
-                                Anterior
-                            </Button>
-                            <Button
-                                variant="secondary"
-                                onClick={() => nextLessonId && navigate(`/lesson/${nextLessonId}`)}
-                                disabled={!nextLessonId}
-                                className="bg-gray-700 hover:bg-gray-600 text-white disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2"
-                            >
-                                Próxima
-                                <ChevronRight className="h-4 w-4 ml-1" />
-                            </Button>
-                        </div>
-
-                        <Button
-                            onClick={handleLessonComplete}
-                            className={cn(
-                                "px-6 py-2",
-                                isCompleted ? "bg-green-600 hover:bg-green-700" : "bg-primary hover:bg-primary/90"
-                            )}
-                        >
-                            {isCompleted ? (
-                                <>
-                                    <CheckCircle className="h-4 w-4 mr-2" />
-                                    Concluída
-                                </>
-                            ) : (
-                                <>
-                                    <CheckCircle className="h-4 w-4 mr-2" />
-                                    Concluir Aula
-                                </>
-                            )}
-                        </Button>
-                    </div>
-
-                    <div className="mt-8 mb-8">
-                        <h1 className="text-2xl font-bold text-white mb-2">{lesson.title}</h1>
-                        <p className="text-gray-400">
-                            {(lesson as any).modules?.title}
-                        </p>
-                    </div>
-
-                    {lesson.support_text && (
-                        <div className="bg-card rounded-xl p-6 border border-border">
-                            <h3 className="text-lg font-semibold text-white mb-4">Material de Apoio</h3>
-                            <div className="prose prose-invert max-w-none text-gray-300">
-                                {lesson.support_text}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        {lesson.youtube_video_id && (
+                            <div className="aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-800 mb-6">
+                                <VideoPlayer videoId={lesson.youtube_video_id} />
                             </div>
+                        )}
+
+                        {/* Action Buttons - Responsive Layout */}
+                        <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-4 mt-6">
+                            <div className="flex items-center gap-3 w-full sm:w-auto">
+                                <Button
+                                    variant="secondary"
+                                    onClick={() => prevLessonId && navigate(`/lesson/${prevLessonId}`)}
+                                    disabled={!prevLessonId}
+                                    className="flex-1 sm:flex-none bg-gray-700 hover:bg-gray-600 text-white disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 justify-center"
+                                >
+                                    <ChevronLeft className="h-4 w-4 mr-1" />
+                                    Anterior
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    onClick={() => nextLessonId && navigate(`/lesson/${nextLessonId}`)}
+                                    disabled={!nextLessonId}
+                                    className="flex-1 sm:flex-none bg-gray-700 hover:bg-gray-600 text-white disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 justify-center"
+                                >
+                                    Próxima
+                                    <ChevronRight className="h-4 w-4 ml-1" />
+                                </Button>
+                            </div>
+
+                            <Button
+                                onClick={handleLessonComplete}
+                                className={cn(
+                                    "w-full sm:w-auto px-8 py-3 text-base font-medium transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-primary/25",
+                                    isCompleted
+                                        ? "bg-green-600 hover:bg-green-700 ring-2 ring-green-500/50"
+                                        : "bg-primary hover:bg-primary/90 ring-2 ring-primary/50"
+                                )}
+                            >
+                                {isCompleted ? (
+                                    <>
+                                        <CheckCircle className="h-5 w-5 mr-2" />
+                                        Concluída
+                                    </>
+                                ) : (
+                                    <>
+                                        <CheckCircle className="h-5 w-5 mr-2" />
+                                        Concluir Aula
+                                    </>
+                                )}
+                            </Button>
                         </div>
-                    )}
+
+                        <div className="mt-8 mb-8">
+                            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 leading-tight">{lesson.title}</h1>
+                            <p className="text-gray-400 text-lg">
+                                {(lesson as any).modules?.title}
+                            </p>
+                        </div>
+
+                        {lesson.support_text && (
+                            <div className="bg-card rounded-xl p-6 border border-border shadow-lg">
+                                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                                    <span className="bg-primary/10 p-2 rounded-lg text-primary">📚</span>
+                                    Material de Apoio
+                                </h3>
+                                <div className="prose prose-invert max-w-none text-gray-300 whitespace-pre-wrap leading-relaxed">
+                                    {renderSupportText(lesson.support_text)}
+                                </div>
+                            </div>
+                        )}
+                    </motion.div>
                 </div>
             </div>
 
