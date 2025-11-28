@@ -217,7 +217,7 @@ const Courses = () => {
             description: formData.description || null,
             thumbnail_url: formData.thumbnail_url?.trim() || null,
             order_position: formData.order_position,
-            // status_curso: formData.status_curso, // Temporarily disabled until column is created
+            status_curso: formData.status_curso,
         };
 
         console.log('Saving course:', courseData);
