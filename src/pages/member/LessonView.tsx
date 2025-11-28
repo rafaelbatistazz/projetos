@@ -306,8 +306,7 @@ const LessonView = () => {
             {/* Sidebar Playlist */}
             <div className={cn(
                 "w-80 bg-card border-l border-border flex flex-col transition-all duration-300 absolute md:relative right-0 z-40 shadow-2xl md:shadow-none",
-                "h-full md:h-full", // Ensure full height on all screens
-                "max-h-screen md:max-h-none", // Limit height on mobile to viewport
+                "inset-y-0", // Full height from top to bottom
                 sidebarOpen ? "translate-x-0" : "translate-x-full md:translate-x-0 md:w-0 md:border-none"
             )}>
                 <div className="p-4 border-b border-border flex items-center justify-between bg-card flex-shrink-0">
@@ -317,7 +316,7 @@ const LessonView = () => {
                     </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
+                <div className="flex-1 overflow-y-auto overscroll-contain min-h-0" style={{ WebkitOverflowScrolling: 'touch' }}>
                     {modules.map((module) => (
                         <div key={module.id} className="border-b border-border">
                             <div className="px-4 py-3 bg-muted/30">
