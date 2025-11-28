@@ -2,15 +2,25 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../types/supabase';
-import { BookOpen, Loader2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { BookOpen, Loader2, Lock, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../../context/AuthContext';
 
 type Course = Database['public']['Tables']['courses']['Row'];
 
 const Home = () => {
     const navigate = useNavigate();
+    const { userEmail } = useAuth();
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
+    const [courseAccess, setCourseAccess] = useState<Set<string>>(new Set());
+    const [showLockedModal, setShowLockedModal] = useState(false);
+    const [lockedCourseTitle, setLockedCourseTitle] = useState('');
+    const [ctaConfig, setCtaConfig] = useState({
+        message: 'Este curso não está disponível no seu plano atual.',
+        buttonText: 'Falar com Suporte',
+        buttonUrl: 'https://wa.me/5511999999999'
+    });
 
     const [bannerConfig, setBannerConfig] = useState({
         url: 'https://images.unsplash.com/photo-1555421689-491a97ff2040?q=80&w=2070&auto=format&fit=crop',
@@ -21,7 +31,49 @@ const Home = () => {
     useEffect(() => {
         fetchCourses();
         fetchBannerConfig();
-    }, []);
+        fetchCtaConfig();
+        if (userEmail) {
+            fetchCourseAccess();
+        }
+    }, [userEmail]);
+
+    const fetchCourseAccess = async () => {
+        if (!userEmail) return;
+        try {
+            const { data } = await supabase
+                .from('course_access')
+                .select('course_id')
+                .eq('email', userEmail)
+                .or('expires_at.is.null,expires_at.gt.' + new Date().toISOString());
+
+            if (data) {
+                setCourseAccess(new Set(data.map(a => a.course_id)));
+            }
+        } catch (error) {
+            console.error('Error fetching course access:', error);
+        }
+    };
+
+    const fetchCtaConfig = async () => {
+        try {
+            const { data } = await supabase
+                .from('site_config')
+                .select('*')
+                .in('key', ['locked_course_message', 'locked_course_button_text', 'locked_course_button_url']);
+
+            if (data) {
+                const newConfig = { ...ctaConfig };
+                data.forEach((item: any) => {
+                    if (item.key === 'locked_course_message' && item.value) newConfig.message = item.value;
+                    if (item.key === 'locked_course_button_text' && item.value) newConfig.buttonText = item.value;
+                    if (item.key === 'locked_course_button_url' && item.value) newConfig.buttonUrl = item.value;
+                });
+                setCtaConfig(newConfig);
+            }
+        } catch (error) {
+            console.error('Error fetching CTA config:', error);
+        }
+    };
 
     const fetchBannerConfig = async () => {
         try {
@@ -137,42 +189,129 @@ const Home = () => {
                         animate="show"
                         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
                     >
-                        {courses.map((course) => (
-                            <motion.div
-                                key={course.id}
-                                variants={item}
-                                onClick={() => navigate(`/course/${course.id}`)}
-                                className="group cursor-pointer bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-primary/20 transition-all duration-300 hover:-translate-y-1"
-                            >
-                                <div className="aspect-[2/3] relative overflow-hidden">
-                                    {course.thumbnail_url ? (
-                                        <img
-                                            src={course.thumbnail_url}
-                                            alt={course.title}
-                                            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full bg-gray-900 flex items-center justify-center">
-                                            <BookOpen className="h-12 w-12 text-gray-700" />
-                                        </div>
-                                    )}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity" />
+                        {courses.map((course) => {
+                            const hasAccess = courseAccess.has(course.id);
 
-                                    <div className="absolute bottom-0 left-0 right-0 p-6">
-                                        <h3 className="text-xl font-bold text-white line-clamp-2 mb-2 group-hover:text-primary transition-colors">
+                            return (
+                                <motion.div
+                                    key={course.id}
+                                    variants={item}
+                                    onClick={() => {
+                                        if (hasAccess) {
+                                            navigate(`/course/${course.id}`);
+                                        } else {
+                                            setLockedCourseTitle(course.title);
+                                            setShowLockedModal(true);
+                                        }
+                                    }}
+                                    className="group cursor-pointer bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-primary/20 transition-all duration-300 hover:-translate-y-1 relative"
+                                >
+                                    <div className="aspect-[2/3] relative overflow-hidden">
+                                        {course.thumbnail_url ? (
+                                            <img
+                                                src={course.thumbnail_url}
+                                                alt={course.title}
+                                                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full bg-gray-900 flex items-center justify-center">
+                                                <BookOpen className="h-12 w-12 text-gray-700" />
+                                            </div>
+                                        )}
+
+                                        {/* Locked Overlay */}
+                                        {!hasAccess && (
+                                            <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-10 backdrop-blur-sm">
+                                                <Lock className="h-12 w-12 text-gray-400 mb-3" />
+                                                <p className="text-sm text-gray-300 font-medium">Curso Bloqueado</p>
+                                                <p className="text-xs text-gray-500 mt-1">Clique para mais info</p>
+                                            </div>
+                                        )}
+
+                                        {/* Access Badge */}
+                                        {hasAccess && (
+                                            <div className="absolute top-3 right-3 bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg z-10">
+                                                ✓ LIBERADO
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="p-4">
+                                        <h3 className="text-lg font-semibold text-white mb-2 line-clamp-2 group-hover:text-primary transition-colors">
                                             {course.title}
                                         </h3>
-                                        {/* Progress bar placeholder */}
-                                        <div className="w-full bg-gray-700/50 h-1 rounded-full mt-2 overflow-hidden backdrop-blur-sm">
-                                            <div className="bg-primary h-full rounded-full w-0 group-hover:w-full transition-all duration-1000 ease-out" />
-                                        </div>
+                                        {course.description && (
+                                            <p className="text-sm text-gray-400 line-clamp-2">
+                                                {course.description}
+                                            </p>
+                                        )}
                                     </div>
-                                </div>
-                            </motion.div>
-                        ))}
+                                </motion.div>
+                            );
+                        })}
                     </motion.div>
                 )}
             </div>
+
+            {/* Locked Course Modal */}
+            <AnimatePresence>
+                {showLockedModal && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+                        onClick={() => setShowLockedModal(false)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, y: 20 }}
+                            animate={{ scale: 1, y: 0 }}
+                            exit={{ scale: 0.9, y: 20 }}
+                            className="bg-[#1a1f2e] rounded-xl p-8 max-w-md w-full border border-gray-700 shadow-2xl"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="flex items-start justify-between mb-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-3 bg-gray-800 rounded-full">
+                                        <Lock className="h-6 w-6 text-primary" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-bold text-white">Acesso Restrito</h3>
+                                        <p className="text-sm text-gray-400 mt-1">{lockedCourseTitle}</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => setShowLockedModal(false)}
+                                    className="text-gray-400 hover:text-white transition-colors"
+                                >
+                                    <X className="h-6 w-6" />
+                                </button>
+                            </div>
+
+                            <p className="text-gray-300 mb-6 leading-relaxed">
+                                {ctaConfig.message}
+                            </p>
+
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => setShowLockedModal(false)}
+                                    className="flex-1 px-4 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors"
+                                >
+                                    Fechar
+                                </button>
+                                <a
+                                    href={ctaConfig.buttonUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex-1 px-4 py-3 bg-primary hover:bg-primary/90 text-white rounded-lg font-medium transition-colors text-center"
+                                >
+                                    {ctaConfig.buttonText}
+                                </a>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

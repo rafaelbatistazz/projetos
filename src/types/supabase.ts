@@ -137,6 +137,37 @@ export interface Database {
                     }
                 ]
             }
+            course_access: {
+                Row: {
+                    id: string
+                    email: string
+                    course_id: string
+                    granted_at: string
+                    expires_at: string | null
+                }
+                Insert: {
+                    id?: string
+                    email: string
+                    course_id: string
+                    granted_at?: string
+                    expires_at?: string | null
+                }
+                Update: {
+                    id?: string
+                    email?: string
+                    course_id?: string
+                    granted_at?: string
+                    expires_at?: string | null
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "course_access_course_id_fkey"
+                        columns: ["course_id"]
+                        referencedRelation: "courses"
+                        referencedColumns: ["id"]
+                    }
+                ]
+            }
         }
         Views: {
             [_ in never]: never

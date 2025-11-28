@@ -11,7 +11,10 @@ const Settings = () => {
     const [config, setConfig] = useState({
         banner_url: '',
         banner_title: '',
-        banner_subtitle: ''
+        banner_subtitle: '',
+        locked_course_message: '',
+        locked_course_button_text: '',
+        locked_course_button_url: ''
     });
 
     useEffect(() => {
@@ -32,6 +35,9 @@ const Settings = () => {
                     if (item.key === 'banner_url') newConfig.banner_url = item.value;
                     if (item.key === 'banner_title') newConfig.banner_title = item.value;
                     if (item.key === 'banner_subtitle') newConfig.banner_subtitle = item.value;
+                    if (item.key === 'locked_course_message') newConfig.locked_course_message = item.value;
+                    if (item.key === 'locked_course_button_text') newConfig.locked_course_button_text = item.value;
+                    if (item.key === 'locked_course_button_url') newConfig.locked_course_button_url = item.value;
                 });
                 setConfig(newConfig);
             }
@@ -53,6 +59,9 @@ const Settings = () => {
                 supabase.rpc('update_site_config', { config_key: 'banner_url', config_value: config.banner_url }),
                 supabase.rpc('update_site_config', { config_key: 'banner_title', config_value: config.banner_title }),
                 supabase.rpc('update_site_config', { config_key: 'banner_subtitle', config_value: config.banner_subtitle }),
+                supabase.rpc('update_site_config', { config_key: 'locked_course_message', config_value: config.locked_course_message }),
+                supabase.rpc('update_site_config', { config_key: 'locked_course_button_text', config_value: config.locked_course_button_text }),
+                supabase.rpc('update_site_config', { config_key: 'locked_course_button_url', config_value: config.locked_course_button_url }),
             ]);
 
             toast.success('Configurações salvas com sucesso!');
@@ -135,6 +144,56 @@ const Settings = () => {
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div className="flex justify-end pt-4">
+                        <Button type="submit" isLoading={saving}>
+                            <Save className="h-4 w-4 mr-2" />
+                            Salvar Alterações
+                        </Button>
+                    </div>
+                </form>
+            </div>
+
+            {/* Locked Course CTA Configuration */}
+            <div className="bg-[#1a1f2e] rounded-xl shadow-lg border border-gray-700 overflow-hidden mt-8">
+                <div className="p-6 border-b border-gray-700">
+                    <h2 className="text-lg font-medium text-white flex items-center gap-2">
+                        🔒 Cursos Bloqueados
+                    </h2>
+                    <p className="mt-1 text-sm text-gray-400">
+                        Configure a mensagem e o botão que aparecem quando um cliente tenta acessar um curso bloqueado.
+                    </p>
+                </div>
+
+                <form onSubmit={handleSave} className="p-6 space-y-6">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Mensagem de Bloqueio
+                        </label>
+                        <textarea
+                            value={config.locked_course_message}
+                            onChange={(e) => setConfig({ ...config, locked_course_message: e.target.value })}
+                            placeholder="Ex: Este curso não está disponível no seu plano atual."
+                            className="w-full px-4 py-3 bg-[#0f1419] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                            rows={3}
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        <Input
+                            label="Texto do Botão"
+                            value={config.locked_course_button_text}
+                            onChange={(e) => setConfig({ ...config, locked_course_button_text: e.target.value })}
+                            placeholder="Ex: Falar com Suporte"
+                        />
+
+                        <Input
+                            label="Link do Botão"
+                            value={config.locked_course_button_url}
+                            onChange={(e) => setConfig({ ...config, locked_course_button_url: e.target.value })}
+                            placeholder="Ex: https://wa.me/5511999999999"
+                        />
                     </div>
 
                     <div className="flex justify-end pt-4">
