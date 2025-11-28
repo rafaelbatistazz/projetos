@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../types/supabase';
-import { Loader2, ChevronLeft, Play, Lock, ArrowLeft, PlayCircle } from 'lucide-react';
+import { Loader2, Lock, ArrowLeft, PlayCircle } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import { motion } from 'framer-motion';
 

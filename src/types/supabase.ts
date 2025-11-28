@@ -39,6 +39,7 @@ export interface Database {
                     title: string
                     description: string | null
                     thumbnail_url: string | null
+                    status_curso: boolean
                     order_position: number
                     created_at: string
                 }
@@ -47,6 +48,7 @@ export interface Database {
                     title: string
                     description?: string | null
                     thumbnail_url?: string | null
+                    status_curso?: boolean
                     order_position?: number
                     created_at?: string
                 }
@@ -55,6 +57,7 @@ export interface Database {
                     title?: string
                     description?: string | null
                     thumbnail_url?: string | null
+                    status_curso?: boolean
                     order_position?: number
                     created_at?: string
                 }

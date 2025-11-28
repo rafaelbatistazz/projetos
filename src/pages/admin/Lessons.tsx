@@ -8,8 +8,8 @@ import {
     PointerSensor,
     useSensor,
     useSensors,
-    DragEndEvent
 } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
 import {
     arrayMove,
     SortableContext,
@@ -78,10 +78,11 @@ const SortableRow = ({ lesson, modules, handleOpenModal, handleDelete }: any) =>
 };
 
 const Lessons = () => {
+    const [courses, setCourses] = useState<Course[]>([]);
     const [lessons, setLessons] = useState<Lesson[]>([]);
     const [modules, setModules] = useState<Module[]>([]);
 
-    const [loading, setLoading] = useState(true);
+    const [, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
     const [formData, setFormData] = useState({
@@ -223,6 +224,8 @@ const Lessons = () => {
                 support_text: lesson.support_text || '',
                 duration: lesson.duration || '',
                 order_position: lesson.order_position,
+                module_id: lesson.module_id,
+                thumbnail_url: '',
             });
         } else {
             setEditingLesson(null);
@@ -232,6 +235,8 @@ const Lessons = () => {
                 support_text: '',
                 duration: '',
                 order_position: lessons.length + 1,
+                module_id: selectedModuleId,
+                thumbnail_url: '',
             });
         }
         setIsModalOpen(true);

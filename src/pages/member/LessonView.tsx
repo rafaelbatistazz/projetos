@@ -181,7 +181,7 @@ const LessonView = () => {
                         <div>
                             <h1 className="text-2xl font-bold text-white mb-2">{lesson.title}</h1>
                             <p className="text-gray-400">
-                                {lesson.modules && (lesson.modules as any).title}
+                                {(lesson as any).modules?.title}
                             </p>
                         </div>
 

@@ -9,8 +9,8 @@ import {
     PointerSensor,
     useSensor,
     useSensors,
-    DragEndEvent
 } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
 import {
     arrayMove,
     SortableContext,
@@ -176,6 +176,7 @@ const Courses = () => {
                 title: course.title,
                 description: course.description || '',
                 thumbnail_url: course.thumbnail_url || '',
+                status_curso: course.status_curso,
                 order_position: course.order_position,
             });
         } else {
@@ -184,6 +185,7 @@ const Courses = () => {
                 title: '',
                 description: '',
                 thumbnail_url: '',
+                status_curso: true,
                 order_position: courses.length + 1,
             });
         }
@@ -229,8 +231,7 @@ const Courses = () => {
 
             fetchCourses();
             handleCloseModal();
-            fetchCourses();
-            handleCloseModal();
+
         } catch (error: any) {
             console.error('Error saving course:', error);
             toast.error(`Erro ao salvar curso: ${error.message || error.error_description || 'Erro desconhecido'}`);
@@ -376,29 +377,28 @@ const Courses = () => {
                     <p className="mt-2 text-xs text-gray-400">
                         <strong>Dica:</strong> Para melhor visualização na área de membros, use imagens verticais com proporção 2:3 (ex: 1080x1620px).
                     </p>
-                </div>
 
-                <Input
-                    label="URL da Thumbnail (Opcional)"
-                    value={formData.thumbnail_url}
-                    onChange={(e) => setFormData({ ...formData, thumbnail_url: e.target.value })}
-                />
+                    <Input
+                        label="URL da Thumbnail (Opcional)"
+                        value={formData.thumbnail_url}
+                        onChange={(e) => setFormData({ ...formData, thumbnail_url: e.target.value })}
+                    />
 
-                <div className="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
-                    <Button type="submit" isLoading={saving} className="w-full sm:col-start-2">
-                        Salvar
-                    </Button>
-                    <Button
-                        type="button"
-                        variant="secondary"
-                        onClick={handleCloseModal}
-                        className="mt-3 w-full sm:mt-0 sm:col-start-1"
-                    >
-                        Cancelar
-                    </Button>
-                </div>
-            </form>
-        </Modal>
+                    <div className="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
+                        <Button type="submit" isLoading={saving} className="w-full sm:col-start-2">
+                            Salvar
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            onClick={handleCloseModal}
+                            className="mt-3 w-full sm:mt-0 sm:col-start-1"
+                        >
+                            Cancelar
+                        </Button>
+                    </div>
+                </form>
+            </Modal>
         </div >
     );
 };

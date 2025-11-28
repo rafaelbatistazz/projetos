@@ -1,4 +1,4 @@
-```javascript
+
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../types/supabase';
@@ -14,8 +14,8 @@ import {
     PointerSensor,
     useSensor,
     useSensors,
-    DragEndEvent
 } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
 import {
     arrayMove,
     SortableContext,
@@ -83,7 +83,7 @@ const SortableRow = ({ module, courses, handleOpenModal, handleDelete }: { modul
 const Modules = () => {
     const [courses, setCourses] = useState<Course[]>([]);
     const [modules, setModules] = useState<Module[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingModule, setEditingModule] = useState<Module | null>(null);
     const [formData, setFormData] = useState({
@@ -196,6 +196,8 @@ const Modules = () => {
                 title: module.title,
                 description: module.description || '',
                 order_position: module.order_position,
+                course_id: module.course_id,
+                thumbnail_url: '',
             });
         } else {
             setEditingModule(null);
@@ -203,6 +205,8 @@ const Modules = () => {
                 title: '',
                 description: '',
                 order_position: modules.length + 1,
+                course_id: selectedCourseId,
+                thumbnail_url: '',
             });
         }
         setIsModalOpen(true);
@@ -252,7 +256,7 @@ const Modules = () => {
             handleCloseModal();
         } catch (error: any) {
             console.error('Error saving module:', error);
-            toast.error(`Erro ao salvar módulo: ${ error.message || error.error_description || 'Erro desconhecido' } `);
+            toast.error(`Erro ao salvar módulo: ${error.message || error.error_description || 'Erro desconhecido'} `);
         } finally {
             setSaving(false);
         }
@@ -334,12 +338,12 @@ const Modules = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-700 bg-[#0f1419]">
-                                    <DndContext 
+                                    <DndContext
                                         sensors={sensors}
                                         collisionDetection={closestCenter}
                                         onDragEnd={handleDragEnd}
                                     >
-                                        <SortableContext 
+                                        <SortableContext
                                             items={modules}
                                             strategy={verticalListSortingStrategy}
                                         >
