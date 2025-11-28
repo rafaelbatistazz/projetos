@@ -169,13 +169,18 @@ const LessonView = () => {
     if (!lesson) return null;
 
     return (
-        <div className="flex h-[calc(100vh-4rem)] bg-background overflow-hidden">
+        <div
+            className="flex h-[calc(100vh-4rem)] bg-background overflow-hidden select-none"
+            onContextMenu={(e) => e.preventDefault()}
+        >
             {/* Main Content */}
             <div className="flex-1 overflow-y-auto">
                 <div className="max-w-5xl mx-auto px-4 py-6">
-                    <div className="aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-800 mb-6">
-                        <VideoPlayer videoId={lesson.youtube_video_id} />
-                    </div>
+                    {lesson.youtube_video_id && (
+                        <div className="aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-800 mb-6">
+                            <VideoPlayer videoId={lesson.youtube_video_id} />
+                        </div>
+                    )}
 
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                         <div>

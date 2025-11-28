@@ -441,11 +441,10 @@ const Lessons = () => {
                     />
 
                     <Input
-                        label="ID do Vídeo (YouTube)"
+                        label="ID do Vídeo (YouTube) - Opcional"
                         value={formData.youtube_video_id}
                         onChange={(e) => setFormData({ ...formData, youtube_video_id: e.target.value })}
-                        required
-                        placeholder="Ex: dQw4w9WgXcQ"
+                        placeholder="Ex: dQw4w9WgXcQ (Deixe em branco para apenas texto)"
                     />
 
                     <div>
