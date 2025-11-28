@@ -73,7 +73,39 @@ const Clients = () => {
         }
     };
 
-    // ... (toggleStatus and delete remain same) ...
+    const handleToggleStatus = async (client: Client) => {
+        try {
+            const { error } = await supabase
+                .from('clientes')
+                .update({ status_cliente: !client.status_cliente } as any)
+                .eq('id', client.id);
+
+            if (error) throw error;
+            toast.success(`Acesso ${!client.status_cliente ? 'ativado' : 'desativado'} com sucesso`);
+            fetchClients();
+        } catch (error) {
+            toast.error('Erro ao atualizar status');
+            console.error(error);
+        }
+    };
+
+    const handleDelete = async (id: string) => {
+        if (!window.confirm('Tem certeza que deseja excluir este cliente?')) return;
+
+        try {
+            const { error } = await supabase
+                .from('clientes')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
+            toast.success('Cliente excluído com sucesso');
+            fetchClients();
+        } catch (error) {
+            toast.error('Erro ao excluir cliente');
+            console.error(error);
+        }
+    };
 
     return (
         <div>

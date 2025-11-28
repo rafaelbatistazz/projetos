@@ -18,12 +18,15 @@ interface ModuleWithLessons extends Module {
 const LessonView = () => {
     const { lessonId } = useParams();
     const navigate = useNavigate();
+    const { userEmail } = useAuth();
     const [lesson, setLesson] = useState<Lesson | null>(null);
     const [modules, setModules] = useState<ModuleWithLessons[]>([]);
     const [loading, setLoading] = useState(true);
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [nextLessonId, setNextLessonId] = useState<string | null>(null);
     const [prevLessonId, setPrevLessonId] = useState<string | null>(null);
+    const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set());
+    const [isCompleted, setIsCompleted] = useState(false);
 
     useEffect(() => {
         if (lessonId) {
@@ -31,10 +34,23 @@ const LessonView = () => {
         }
     }, [lessonId]);
 
+    useEffect(() => {
+        if (userEmail && modules.length > 0) {
+            fetchCompletedLessons();
+        }
+    }, [userEmail, modules]);
+
+    useEffect(() => {
+        if (lesson && completedLessons.has(lesson.id)) {
+            setIsCompleted(true);
+        } else {
+            setIsCompleted(false);
+        }
+    }, [lesson, completedLessons]);
+
     const fetchLessonAndContext = async (id: string) => {
         setLoading(true);
         try {
-            // Fetch current lesson
             const { data: lessonData, error: lessonError } = await supabase
                 .from('lessons')
                 .select('*, modules(*, courses(*))')
@@ -44,7 +60,6 @@ const LessonView = () => {
             if (lessonError) throw lessonError;
             setLesson(lessonData);
 
-            // Fetch all modules and lessons for the course
             // @ts-ignore
             const courseId = lessonData.modules?.course_id;
 
@@ -96,14 +111,6 @@ const LessonView = () => {
         }
     };
 
-    const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set());
-
-    useEffect(() => {
-        if (userEmail && modules.length > 0) {
-            fetchCompletedLessons();
-        }
-    }, [userEmail, modules]);
-
     const fetchCompletedLessons = async () => {
         if (!userEmail) return;
         const { data } = await supabase
@@ -116,7 +123,6 @@ const LessonView = () => {
         }
     };
 
-    // Update handleLessonComplete to update local state
     const handleLessonComplete = async () => {
         if (!userEmail || !lesson) return;
 
@@ -146,84 +152,163 @@ const LessonView = () => {
             if (!error) {
                 setIsCompleted(true);
                 setCompletedLessons(prev => new Set(prev).add(lesson.id));
-                if (nextLessonId) {
-                    navigate(`/lesson/${nextLessonId}`);
-                }
+                // Optional: Auto-advance
+                // if (nextLessonId) navigate(`/lesson/${nextLessonId}`);
             }
         }
     };
 
-    // ... (render part)
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-screen bg-background">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        );
+    }
 
-    {/* Sidebar Playlist */ }
-    <div className={cn(
-        "w-80 bg-[#1a1f2e] border-l border-gray-800 flex flex-col transition-all duration-300 absolute md:relative right-0 h-full z-40",
-        sidebarOpen ? "translate-x-0" : "translate-x-full md:translate-x-0 md:w-0 md:border-none"
-    )}>
-        <div className="p-4 border-b border-gray-800 flex items-center justify-between">
-            <h2 className="font-semibold text-white">Conteúdo do Curso</h2>
-            <button onClick={() => setSidebarOpen(false)} className="md:hidden text-gray-400">
-                <X className="h-5 w-5" />
-            </button>
-        </div>
+    if (!lesson) return null;
 
-        <div className="flex-1 overflow-y-auto">
-            {modules.map((module) => (
-                <div key={module.id} className="border-b border-gray-800/50">
-                    <div className="px-4 py-3 bg-[#151a25]">
-                        <h3 className="text-sm font-medium text-gray-300">{module.title}</h3>
+    return (
+        <div className="flex h-[calc(100vh-4rem)] bg-background overflow-hidden">
+            {/* Main Content */}
+            <div className="flex-1 overflow-y-auto">
+                <div className="max-w-5xl mx-auto px-4 py-6">
+                    <div className="aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-800 mb-6">
+                        <VideoPlayer videoId={lesson.youtube_video_id} />
                     </div>
-                    <div>
-                        {module.lessons.map((l) => {
-                            const isLessonCompleted = completedLessons.has(l.id);
-                            const isCurrent = l.id === lesson?.id;
 
-                            return (
-                                <button
-                                    key={l.id}
-                                    onClick={() => navigate(`/lesson/${l.id}`)}
-                                    className={cn(
-                                        "w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-gray-800/50 transition-colors",
-                                        isCurrent ? "bg-primary/10 border-l-2 border-primary" : ""
-                                    )}
-                                >
-                                    {isLessonCompleted ? (
-                                        <CheckCircle className="h-4 w-4 mt-0.5 flex-shrink-0 text-green-500" />
-                                    ) : (
-                                        <PlayCircle className={cn(
-                                            "h-4 w-4 mt-0.5 flex-shrink-0",
-                                            isCurrent ? "text-primary" : "text-gray-500"
-                                        )} />
-                                    )}
-                                    <div>
-                                        <p className={cn(
-                                            "text-sm font-medium line-clamp-2",
-                                            isCurrent ? "text-primary" : "text-gray-400",
-                                            isLessonCompleted && !isCurrent && "text-gray-500"
-                                        )}>
-                                            {l.title}
-                                        </p>
-                                        <span className="text-xs text-gray-600 mt-1 block">
-                                            {l.duration || '00:00'}
-                                        </span>
-                                    </div>
-                                </button>
-                            );
-                        })}
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                        <div>
+                            <h1 className="text-2xl font-bold text-white mb-2">{lesson.title}</h1>
+                            <p className="text-gray-400">
+                                {lesson.modules && (lesson.modules as any).title}
+                            </p>
+                        </div>
+
+                        <Button
+                            onClick={handleLessonComplete}
+                            className={cn(
+                                "w-full md:w-auto transition-all duration-300",
+                                isCompleted
+                                    ? "bg-green-600 hover:bg-green-700 text-white border-green-500"
+                                    : "bg-primary hover:bg-primary/90 text-white"
+                            )}
+                        >
+                            {isCompleted ? (
+                                <>
+                                    <CheckCircle className="h-4 w-4 mr-2" />
+                                    Concluída
+                                </>
+                            ) : (
+                                "Concluir Aula"
+                            )}
+                        </Button>
+                    </div>
+
+                    {lesson.support_text && (
+                        <div className="bg-card rounded-xl p-6 border border-border">
+                            <h3 className="text-lg font-semibold text-white mb-4">Material de Apoio</h3>
+                            <div className="prose prose-invert max-w-none text-gray-300">
+                                {lesson.support_text}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Navigation Buttons */}
+                    <div className="flex justify-between mt-8 pt-8 border-t border-gray-800">
+                        <Button
+                            variant="secondary"
+                            onClick={() => prevLessonId && navigate(`/lesson/${prevLessonId}`)}
+                            disabled={!prevLessonId}
+                            className="bg-card hover:bg-gray-800"
+                        >
+                            <ChevronLeft className="h-4 w-4 mr-2" />
+                            Anterior
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            onClick={() => nextLessonId && navigate(`/lesson/${nextLessonId}`)}
+                            disabled={!nextLessonId}
+                            className="bg-card hover:bg-gray-800"
+                        >
+                            Próxima
+                            <ChevronRight className="h-4 w-4 ml-2" />
+                        </Button>
                     </div>
                 </div>
-            ))}
-        </div>
-    </div>
+            </div>
 
-    {/* Toggle Sidebar Button (Mobile/Desktop) */ }
-    <button
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="absolute top-4 right-4 z-50 p-2 bg-gray-800 rounded-lg text-white shadow-lg hover:bg-gray-700 md:hidden"
-    >
-        <Menu className="h-5 w-5" />
-    </button>
-        </div >
+            {/* Sidebar Playlist */}
+            <div className={cn(
+                "w-80 bg-card border-l border-border flex flex-col transition-all duration-300 absolute md:relative right-0 h-full z-40",
+                sidebarOpen ? "translate-x-0" : "translate-x-full md:translate-x-0 md:w-0 md:border-none"
+            )}>
+                <div className="p-4 border-b border-border flex items-center justify-between bg-card">
+                    <h2 className="font-semibold text-white">Conteúdo do Curso</h2>
+                    <button onClick={() => setSidebarOpen(false)} className="md:hidden text-gray-400">
+                        <X className="h-5 w-5" />
+                    </button>
+                </div>
+
+                <div className="flex-1 overflow-y-auto">
+                    {modules.map((module) => (
+                        <div key={module.id} className="border-b border-border">
+                            <div className="px-4 py-3 bg-muted/30">
+                                <h3 className="text-sm font-medium text-gray-300">{module.title}</h3>
+                            </div>
+                            <div>
+                                {module.lessons.map((l) => {
+                                    const isLessonCompleted = completedLessons.has(l.id);
+                                    const isCurrent = l.id === lesson?.id;
+
+                                    return (
+                                        <button
+                                            key={l.id}
+                                            onClick={() => navigate(`/lesson/${l.id}`)}
+                                            className={cn(
+                                                "w-full text-left px-4 py-3 flex items-start gap-3 transition-colors",
+                                                isCurrent
+                                                    ? "bg-primary/10 border-l-2 border-primary"
+                                                    : "hover:bg-accent/50 border-l-2 border-transparent"
+                                            )}
+                                        >
+                                            {isLessonCompleted ? (
+                                                <CheckCircle className="h-4 w-4 mt-0.5 flex-shrink-0 text-green-500" />
+                                            ) : (
+                                                <PlayCircle className={cn(
+                                                    "h-4 w-4 mt-0.5 flex-shrink-0",
+                                                    isCurrent ? "text-primary" : "text-gray-500"
+                                                )} />
+                                            )}
+                                            <div>
+                                                <p className={cn(
+                                                    "text-sm font-medium line-clamp-2",
+                                                    isCurrent ? "text-primary" : "text-gray-400",
+                                                    isLessonCompleted && !isCurrent && "text-gray-500"
+                                                )}>
+                                                    {l.title}
+                                                </p>
+                                                <span className="text-xs text-gray-600 mt-1 block">
+                                                    {l.duration || '00:00'}
+                                                </span>
+                                            </div>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Toggle Sidebar Button (Mobile) */}
+            <button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="absolute top-4 right-4 z-50 p-2 bg-card rounded-lg text-white shadow-lg hover:bg-gray-800 md:hidden border border-border"
+            >
+                <Menu className="h-5 w-5" />
+            </button>
+        </div>
     );
 };
 
