@@ -199,11 +199,26 @@ const LessonView = () => {
 
     if (!lesson) return null;
 
+    useEffect(() => {
+        // Close sidebar on mobile by default
+        if (window.innerWidth < 768) {
+            setSidebarOpen(false);
+        }
+    }, []);
+
     return (
         <div
-            className="flex h-[calc(100vh-4rem)] bg-background overflow-hidden select-none"
+            className="flex h-[calc(100vh-4rem)] bg-background overflow-hidden select-none relative"
             onContextMenu={(e) => e.preventDefault()}
         >
+            {/* Mobile Backdrop */}
+            {sidebarOpen && (
+                <div
+                    className="fixed inset-0 bg-black/50 z-30 md:hidden backdrop-blur-sm transition-opacity"
+                    onClick={() => setSidebarOpen(false)}
+                />
+            )}
+
             {/* Main Content */}
             <div className="flex-1 overflow-y-auto">
                 <div className="max-w-5xl mx-auto px-4 py-6">
@@ -288,12 +303,12 @@ const LessonView = () => {
 
             {/* Sidebar Playlist */}
             <div className={cn(
-                "w-80 bg-card border-l border-border flex flex-col transition-all duration-300 absolute md:relative right-0 h-full z-40",
+                "w-80 bg-card border-l border-border flex flex-col transition-all duration-300 absolute md:relative right-0 h-full z-40 shadow-2xl md:shadow-none",
                 sidebarOpen ? "translate-x-0" : "translate-x-full md:translate-x-0 md:w-0 md:border-none"
             )}>
                 <div className="p-4 border-b border-border flex items-center justify-between bg-card">
                     <h2 className="font-semibold text-white">Conteúdo do Curso</h2>
-                    <button onClick={() => setSidebarOpen(false)} className="md:hidden text-gray-400">
+                    <button onClick={() => setSidebarOpen(false)} className="md:hidden text-gray-400 hover:text-white">
                         <X className="h-5 w-5" />
                     </button>
                 </div>
@@ -312,7 +327,10 @@ const LessonView = () => {
                                     return (
                                         <button
                                             key={l.id}
-                                            onClick={() => navigate(`/lesson/${l.id}`)}
+                                            onClick={() => {
+                                                navigate(`/lesson/${l.id}`);
+                                                if (window.innerWidth < 768) setSidebarOpen(false);
+                                            }}
                                             className={cn(
                                                 "w-full text-left px-4 py-3 flex items-start gap-3 transition-colors",
                                                 isCurrent
@@ -352,7 +370,10 @@ const LessonView = () => {
             {/* Toggle Sidebar Button (Mobile) */}
             <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="absolute top-4 right-4 z-50 p-2 bg-card rounded-lg text-white shadow-lg hover:bg-gray-800 md:hidden border border-border"
+                className={cn(
+                    "absolute top-4 right-4 z-50 p-2 bg-card rounded-lg text-white shadow-lg hover:bg-gray-800 md:hidden border border-border transition-opacity duration-300",
+                    sidebarOpen ? "opacity-0 pointer-events-none" : "opacity-100"
+                )}
             >
                 <Menu className="h-5 w-5" />
             </button>

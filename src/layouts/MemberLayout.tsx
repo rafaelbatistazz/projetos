@@ -60,7 +60,7 @@ const MemberLayout = () => {
                         </div>
 
                         {/* Social Icons */}
-                        <div className="hidden md:flex items-center gap-4">
+                        <div className="flex items-center gap-2 md:gap-4">
                             {socialLinks.instagram && (
                                 <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#E1306C] transition-colors">
                                     <Instagram className="h-5 w-5" />
