@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../types/supabase';
-import { Loader2, ChevronLeft, Play, Lock } from 'lucide-react';
+import { Loader2, ChevronLeft, Play, Lock, ArrowLeft, PlayCircle } from 'lucide-react';
 import Button from '../../components/ui/Button';
+import { motion } from 'framer-motion';
 
 type Course = Database['public']['Tables']['courses']['Row'];
 type Module = Database['public']['Tables']['modules']['Row'];
@@ -73,6 +74,29 @@ const CourseModules = () => {
         }
     };
 
+    const handlePlayModule = (moduleId: string) => {
+        // Find the module and its first lesson
+        const module = modules.find(m => m.id === moduleId);
+        if (module && module.lessons.length > 0) {
+            navigate(`/lesson/${module.lessons[0].id}`);
+        }
+    };
+
+    const container = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1
+            }
+        }
+    };
+
+    const item = {
+        hidden: { opacity: 0, x: -20 },
+        show: { opacity: 1, x: 0 }
+    };
+
     if (loading) {
         return (
             <div className="flex items-center justify-center h-full min-h-[50vh]">
@@ -81,82 +105,71 @@ const CourseModules = () => {
         );
     }
 
-    if (!course) {
-        return (
-            <div className="text-center py-12">
-                <p className="text-gray-400">Curso não encontrado.</p>
-                <Button variant="secondary" onClick={() => navigate('/')} className="mt-4">
-                    Voltar para Home
-                </Button>
-            </div>
-        );
-    }
+    if (!course) return null;
 
     return (
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <button
-                onClick={() => navigate('/')}
-                className="flex items-center text-gray-400 hover:text-white mb-8 transition-colors"
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-8"
             >
-                <ChevronLeft className="h-5 w-5 mr-1" />
-                Voltar para o Portal
-            </button>
+                <button
+                    onClick={() => navigate('/member')}
+                    className="flex items-center text-gray-400 hover:text-white mb-4 transition-colors"
+                >
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Voltar para Cursos
+                </button>
+                <h1 className="text-3xl font-bold text-white">{course.title}</h1>
+                <p className="mt-2 text-gray-400">{course.description}</p>
+            </motion.div>
 
-            <div className="mb-12">
-                <h1 className="text-3xl font-bold text-white mb-2">{course.title}</h1>
-                <p className="text-gray-400 max-w-2xl">{course.description}</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {modules.map((module) => (
-                    <div
+            <motion.div
+                variants={container}
+                initial="hidden"
+                animate="show"
+                className="space-y-4"
+            >
+                {modules.map((module, index) => (
+                    <motion.div
                         key={module.id}
-                        className="bg-[#1a1f2e] rounded-xl overflow-hidden border border-gray-800 hover:border-primary/50 transition-all duration-300 group hover:shadow-lg hover:shadow-primary/10"
+                        variants={item}
+                        className="bg-[#1a1f2e] rounded-xl border border-gray-800 overflow-hidden hover:border-primary/50 transition-all duration-300"
                     >
-                        <div className="aspect-[3/4] relative bg-gray-900">
-                            {module.thumbnail_url ? (
-                                <img
-                                    src={module.thumbnail_url}
-                                    alt={module.title}
-                                    className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
-                                />
-                            ) : (
-                                <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center border-b border-gray-800">
-                                    <h3 className="text-xl font-bold text-white mb-2">{module.title}</h3>
-                                    <div className="w-12 h-1 bg-primary rounded-full mb-4" />
+                        <div className="p-6">
+                            <div className="flex items-start justify-between">
+                                <div className="flex-1">
+                                    <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-3">
+                                        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-800 text-sm text-gray-400 border border-gray-700">
+                                            {index + 1}
+                                        </span>
+                                        {module.title}
+                                    </h3>
+                                    <p className="text-gray-400 ml-11">{module.description}</p>
                                 </div>
-                            )}
-
-                            <div className="absolute inset-0 bg-gradient-to-t from-[#1a1f2e] via-transparent to-transparent" />
-
-                            <div className="absolute bottom-0 left-0 right-0 p-6">
-                                <h3 className="text-lg font-bold text-white mb-1 line-clamp-2 group-hover:text-primary transition-colors">{module.title}</h3>
-                                <p className="text-sm text-gray-400 mb-4 line-clamp-2">{module.description}</p>
-
-                                {module.lessons.length > 0 ? (
-                                    <Button
-                                        className="w-full justify-center bg-primary hover:bg-primary/90 text-white border-none"
-                                        onClick={() => navigate(`/lesson/${module.lessons[0].id}`)}
+                                onClick={() => navigate(`/lesson/${module.lessons[0].id}`)}
                                     >
-                                        <Play className="h-4 w-4 mr-2" />
-                                        Acessar Módulo
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        variant="secondary"
-                                        className="w-full justify-center opacity-50 cursor-not-allowed"
-                                        disabled
-                                    >
-                                        <Lock className="h-4 w-4 mr-2" />
-                                        Em Breve
-                                    </Button>
+                                <Play className="h-4 w-4 mr-2" />
+                                Acessar Módulo
+                            </Button>
+                            ) : (
+                            <Button
+                                variant="secondary"
+                                className="w-full justify-center opacity-50 cursor-not-allowed"
+                                disabled
+                            >
+                                <Lock className="h-4 w-4 mr-2" />
+                                Em Breve
+                            </Button>
                                 )}
-                            </div>
                         </div>
                     </div>
-                ))}
-            </div>
-        </div>
+                    </div>
+    ))
+}
+            </div >
+        </div >
     );
 };
 

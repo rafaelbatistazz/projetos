@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../types/supabase';
-import { Loader2, PlayCircle } from 'lucide-react';
+import { BookOpen, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 type Course = Database['public']['Tables']['courses']['Row'];
 
-const MemberHome = () => {
+const Home = () => {
     const navigate = useNavigate();
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
@@ -31,6 +32,21 @@ const MemberHome = () => {
         }
     };
 
+    const container = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1
+            }
+        }
+    };
+
+    const item = {
+        hidden: { opacity: 0, y: 20 },
+        show: { opacity: 1, y: 0 }
+    };
+
     if (loading) {
         return (
             <div className="flex items-center justify-center h-full min-h-[50vh]">
@@ -40,48 +56,64 @@ const MemberHome = () => {
     }
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <h1 className="text-3xl font-bold text-white mb-8">Meus Cursos</h1>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-8"
+            >
+                <h1 className="text-3xl font-bold text-white">Meus Cursos</h1>
+                <p className="mt-2 text-gray-400">Continue sua jornada de aprendizado</p>
+            </motion.div>
 
             {courses.length === 0 ? (
-                <div className="text-center text-gray-400 py-12">
-                    <p>Nenhum curso disponível no momento.</p>
+                <div className="text-center py-12">
+                    <p className="text-gray-400">Nenhum curso disponível no momento.</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <motion.div
+                    variants={container}
+                    initial="hidden"
+                    animate="show"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                >
                     {courses.map((course) => (
-                        <div
+                        <motion.div
                             key={course.id}
-                            onClick={() => navigate(`/course/${course.id}`)}
-                            className="group cursor-pointer flex flex-col"
+                            variants={item}
+                            onClick={() => navigate(`/member/course/${course.id}`)}
+                            className="group cursor-pointer bg-[#1a1f2e] rounded-xl overflow-hidden border border-gray-800 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1"
                         >
-                            <div className="relative aspect-[2/3] rounded-lg overflow-hidden mb-3 ring-1 ring-white/10 transition-all duration-300 group-hover:ring-primary/50 group-hover:shadow-lg group-hover:shadow-primary/20">
+                            <div className="aspect-[2/3] relative overflow-hidden">
                                 {course.thumbnail_url ? (
                                     <img
                                         src={course.thumbnail_url}
                                         alt={course.title}
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                        className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                                     />
                                 ) : (
-                                    <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-                                        <PlayCircle className="h-12 w-12 text-gray-600 group-hover:text-primary transition-colors" />
+                                    <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+                                        <BookOpen className="h-12 w-12 text-gray-600" />
                                     </div>
                                 )}
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                            </div>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
 
-                            <h3 className="text-lg font-semibold text-gray-100 group-hover:text-primary transition-colors line-clamp-2">
-                                {course.title}
-                            </h3>
-                            <p className="text-sm text-gray-500 line-clamp-2 mt-1">
-                                {course.description}
-                            </p>
-                        </div>
+                                <div className="absolute bottom-0 left-0 right-0 p-4">
+                                    <h3 className="text-lg font-bold text-white line-clamp-2 mb-1 group-hover:text-primary transition-colors">
+                                        {course.title}
+                                    </h3>
+                                    {/* Progress bar placeholder - can be connected to real data later */}
+                                    <div className="w-full bg-gray-700/50 h-1.5 rounded-full mt-2 overflow-hidden backdrop-blur-sm">
+                                        <div className="bg-primary h-full rounded-full w-0 group-hover:w-full transition-all duration-1000 ease-out" />
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
                     ))}
-                </div>
+                </motion.div>
             )}
 
-            <div className="mt-12 p-4 bg-gray-800/50 rounded-lg border border-gray-700 text-sm text-gray-400 hidden">
+            <div className="mt-12 p-4 bg-gray-800/50 rounded-lg border border-gray-700 text-sm text-gray-400">
                 {/* Tip moved to Admin */}
             </div>
         </div>
