@@ -375,7 +375,7 @@ const LessonView = () => {
             <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 className={cn(
-                    "absolute top-4 right-4 z-50 p-2 bg-card rounded-lg text-white shadow-lg hover:bg-gray-800 md:hidden border border-border transition-opacity duration-300",
+                    "fixed top-20 right-4 z-50 p-2 bg-card rounded-lg text-white shadow-lg hover:bg-gray-800 md:hidden border border-border transition-opacity duration-300",
                     sidebarOpen ? "opacity-0 pointer-events-none" : "opacity-100 animate-pulse"
                 )}
                 aria-label="Abrir lista de aulas"
