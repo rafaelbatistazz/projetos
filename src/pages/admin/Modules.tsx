@@ -334,6 +334,9 @@ const Modules = () => {
                                 <thead className="bg-[#1a1f2e]">
                                     <tr>
                                         <th scope="col" className="py-3 pl-4 pr-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400 sm:pl-6">
+                                            Ordem
+                                        </th>
+                                        <th scope="col" className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
                                             Título
                                         </th>
                                         <th scope="col" className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
