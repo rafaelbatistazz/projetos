@@ -161,18 +161,18 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoId, className, onEnd }) 
                         max={duration}
                         value={currentTime}
                         onChange={handleSeek}
-                        className="w-full h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-blue-500 [&::-webkit-slider-thumb]:rounded-full hover:[&::-webkit-slider-thumb]:scale-125 transition-all"
+                        className="w-full h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:rounded-full hover:[&::-webkit-slider-thumb]:scale-125 transition-all"
                     />
                 </div>
 
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
-                        <button onClick={togglePlay} className="text-white hover:text-blue-400 transition-colors">
+                        <button onClick={togglePlay} className="text-white hover:text-primary transition-colors">
                             {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
                         </button>
 
                         <div className="flex items-center space-x-2 group/volume">
-                            <button onClick={toggleMute} className="text-white hover:text-blue-400 transition-colors">
+                            <button onClick={toggleMute} className="text-white hover:text-primary transition-colors">
                                 {isMuted || volume === 0 ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
                             </button>
                             <input
@@ -190,7 +190,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoId, className, onEnd }) 
                         </span>
                     </div>
 
-                    <button onClick={toggleFullscreen} className="text-white hover:text-blue-400 transition-colors">
+                    <button onClick={toggleFullscreen} className="text-white hover:text-primary transition-colors">
                         {isFullscreen ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
                     </button>
                 </div>

@@ -111,7 +111,7 @@ const CourseModules = () => {
                 {modules.map((module) => (
                     <div
                         key={module.id}
-                        className="bg-[#1a1f2e] rounded-xl overflow-hidden border border-gray-800 hover:border-blue-500/50 transition-all duration-300 group"
+                        className="bg-[#1a1f2e] rounded-xl overflow-hidden border border-gray-800 hover:border-primary/50 transition-all duration-300 group hover:shadow-lg hover:shadow-primary/10"
                     >
                         <div className="aspect-[3/4] relative bg-gray-900">
                             {module.thumbnail_url ? (
@@ -123,19 +123,19 @@ const CourseModules = () => {
                             ) : (
                                 <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center border-b border-gray-800">
                                     <h3 className="text-xl font-bold text-white mb-2">{module.title}</h3>
-                                    <div className="w-12 h-1 bg-blue-500 rounded-full mb-4" />
+                                    <div className="w-12 h-1 bg-primary rounded-full mb-4" />
                                 </div>
                             )}
 
                             <div className="absolute inset-0 bg-gradient-to-t from-[#1a1f2e] via-transparent to-transparent" />
 
                             <div className="absolute bottom-0 left-0 right-0 p-6">
-                                <h3 className="text-lg font-bold text-white mb-1 line-clamp-2">{module.title}</h3>
+                                <h3 className="text-lg font-bold text-white mb-1 line-clamp-2 group-hover:text-primary transition-colors">{module.title}</h3>
                                 <p className="text-sm text-gray-400 mb-4 line-clamp-2">{module.description}</p>
 
                                 {module.lessons.length > 0 ? (
                                     <Button
-                                        className="w-full justify-center"
+                                        className="w-full justify-center bg-primary hover:bg-primary/90 text-white border-none"
                                         onClick={() => navigate(`/lesson/${module.lessons[0].id}`)}
                                     >
                                         <Play className="h-4 w-4 mr-2" />

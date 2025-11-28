@@ -55,7 +55,7 @@ const MemberHome = () => {
                             onClick={() => navigate(`/course/${course.id}`)}
                             className="group cursor-pointer flex flex-col"
                         >
-                            <div className="relative aspect-[2/3] rounded-lg overflow-hidden mb-3 ring-1 ring-white/10 transition-all duration-300 group-hover:ring-blue-500/50 group-hover:shadow-lg group-hover:shadow-blue-500/20">
+                            <div className="relative aspect-[2/3] rounded-lg overflow-hidden mb-3 ring-1 ring-white/10 transition-all duration-300 group-hover:ring-primary/50 group-hover:shadow-lg group-hover:shadow-primary/20">
                                 {course.thumbnail_url ? (
                                     <img
                                         src={course.thumbnail_url}
@@ -64,13 +64,13 @@ const MemberHome = () => {
                                     />
                                 ) : (
                                     <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-                                        <PlayCircle className="h-12 w-12 text-gray-600 group-hover:text-blue-500 transition-colors" />
+                                        <PlayCircle className="h-12 w-12 text-gray-600 group-hover:text-primary transition-colors" />
                                     </div>
                                 )}
                                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
                             </div>
 
-                            <h3 className="text-lg font-semibold text-gray-100 group-hover:text-blue-400 transition-colors line-clamp-2">
+                            <h3 className="text-lg font-semibold text-gray-100 group-hover:text-primary transition-colors line-clamp-2">
                                 {course.title}
                             </h3>
                             <p className="text-sm text-gray-500 line-clamp-2 mt-1">
@@ -80,6 +80,10 @@ const MemberHome = () => {
                     ))}
                 </div>
             )}
+
+            <div className="mt-12 p-4 bg-gray-800/50 rounded-lg border border-gray-700 text-sm text-gray-400">
+                <p><strong>Dica para Capas:</strong> Para melhor visualização, use imagens verticais com proporção 2:3 (ex: 1080x1620px).</p>
+            </div>
         </div>
     );
 };

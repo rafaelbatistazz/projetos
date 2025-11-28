@@ -203,17 +203,17 @@ const LessonView = () => {
                                         onClick={() => navigate(`/lesson/${l.id}`)}
                                         className={cn(
                                             "w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-gray-800/50 transition-colors",
-                                            l.id === lesson.id ? "bg-blue-900/20 border-l-2 border-blue-500" : ""
+                                            l.id === lesson.id ? "bg-primary/10 border-l-2 border-primary" : ""
                                         )}
                                     >
                                         <PlayCircle className={cn(
                                             "h-4 w-4 mt-0.5 flex-shrink-0",
-                                            l.id === lesson.id ? "text-blue-500" : "text-gray-500"
+                                            l.id === lesson.id ? "text-primary" : "text-gray-500"
                                         )} />
                                         <div>
                                             <p className={cn(
                                                 "text-sm font-medium line-clamp-2",
-                                                l.id === lesson.id ? "text-blue-400" : "text-gray-400"
+                                                l.id === lesson.id ? "text-primary" : "text-gray-400"
                                             )}>
                                                 {l.title}
                                             </p>
