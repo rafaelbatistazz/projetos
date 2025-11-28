@@ -226,8 +226,8 @@ const LessonView = () => {
             )}
 
             {/* Main Content */}
-            <div className="flex-1 overflow-y-auto">
-                <div className="max-w-5xl mx-auto px-4 py-6">
+            <div className="flex-1 overflow-y-auto overflow-x-hidden">
+                <div className="max-w-5xl mx-auto px-4 py-6 pb-20 md:pb-6">
                     <div>
                         {lesson.youtube_video_id && (
                             <div className="aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-800 mb-6">
@@ -289,7 +289,7 @@ const LessonView = () => {
                         </div>
 
                         {lesson.support_text && (
-                            <div className="bg-card rounded-xl p-6 border border-border shadow-lg">
+                            <div className="bg-card rounded-xl p-6 border border-border shadow-lg mb-6">
                                 <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                                     <span className="bg-primary/10 p-2 rounded-lg text-primary">📚</span>
                                     Material de Apoio

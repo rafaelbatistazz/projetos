@@ -30,7 +30,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoId, className, onEnd }) 
             modestbranding: 1,
             rel: 0,
             showinfo: 0,
-            fs: 0,
+            fs: 1, // Enable fullscreen button
             disablekb: 1,
             iv_load_policy: 3,
         },
@@ -97,17 +97,55 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoId, className, onEnd }) 
         }
     };
 
-    const toggleFullscreen = () => {
+    const toggleFullscreen = async () => {
         if (!containerRef.current) return;
 
-        if (!document.fullscreenElement) {
-            containerRef.current.requestFullscreen();
-            setIsFullscreen(true);
-        } else {
-            document.exitFullscreen();
-            setIsFullscreen(false);
+        try {
+            if (!document.fullscreenElement) {
+                // Try different fullscreen methods for compatibility
+                if (containerRef.current.requestFullscreen) {
+                    await containerRef.current.requestFullscreen();
+                } else if ((containerRef.current as any).webkitRequestFullscreen) {
+                    await (containerRef.current as any).webkitRequestFullscreen();
+                } else if ((containerRef.current as any).mozRequestFullScreen) {
+                    await (containerRef.current as any).mozRequestFullScreen();
+                } else if ((containerRef.current as any).msRequestFullscreen) {
+                    await (containerRef.current as any).msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    await document.exitFullscreen();
+                } else if ((document as any).webkitExitFullscreen) {
+                    await (document as any).webkitExitFullscreen();
+                } else if ((document as any).mozCancelFullScreen) {
+                    await (document as any).mozCancelFullScreen();
+                } else if ((document as any).msExitFullscreen) {
+                    await (document as any).msExitFullscreen();
+                }
+            }
+        } catch (error) {
+            console.error('Fullscreen error:', error);
         }
     };
+
+    // Listen for fullscreen changes
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+        };
+
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+        document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+        return () => {
+            document.removeEventListener('fullscreenchange', handleFullscreenChange);
+            document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+            document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+        };
+    }, []);
 
     const formatTime = (time: number) => {
         const minutes = Math.floor(time / 60);
