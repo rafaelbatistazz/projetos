@@ -257,6 +257,22 @@ const Courses = () => {
         }
     };
 
+    const toggleStatus = async (course: Course) => {
+        try {
+            const { error } = await supabase
+                .from('courses')
+                .update({ status_curso: !course.status_curso })
+                .eq('id', course.id);
+
+            if (error) throw error;
+            toast.success(`Curso ${!course.status_curso ? 'ativado' : 'desativado'} com sucesso`);
+            fetchCourses();
+        } catch (error) {
+            console.error('Error toggling status:', error);
+            toast.error('Erro ao alterar status do curso');
+        }
+    };
+
     return (
         <div>
             <div className="sm:flex sm:items-center">
@@ -320,11 +336,7 @@ const Courses = () => {
                                                         course={course}
                                                         handleOpenModal={handleOpenModal}
                                                         handleDelete={handleDelete}
-                                                    // Assuming toggleStatus is a prop that needs to be passed,
-                                                    // but it's not defined in the provided context.
-                                                    // For now, I'll omit it or assume it's not needed based on the original code.
-                                                    // If it's meant to be added, it needs to be defined in the parent component.
-                                                    // toggleStatus={toggleStatus} 
+                                                        toggleStatus={toggleStatus}
                                                     />
                                                 ))}
                                             </SortableContext>
@@ -356,15 +368,14 @@ const Courses = () => {
                         </label>
                         <textarea
                             className="appearance-none block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 text-white bg-[#0f1419] focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm"
+                            rows={3}
+                            value={formData.description}
+                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                         />
                     </div>
                     <p className="mt-2 text-xs text-gray-400">
                         <strong>Dica:</strong> Para melhor visualização na área de membros, use imagens verticais com proporção 2:3 (ex: 1080x1620px).
                     </p>
-                    rows={3}
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        />
                 </div>
 
                 <Input

@@ -93,6 +93,7 @@ const Modules = () => {
         order_position: 0,
         thumbnail_url: '',
     });
+    const [selectedCourseId, setSelectedCourseId] = useState<string>('');
     const [saving, setSaving] = useState(false);
 
     const sensors = useSensors(
@@ -109,6 +110,34 @@ const Modules = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
+            // Fetch courses for the dropdown
+            const { data: coursesData, error: coursesError } = await supabase
+                .from('courses')
+                .select('*')
+                .order('title');
+
+            if (coursesError) throw coursesError;
+            setCourses(coursesData || []);
+
+            // If a course is selected, fetch its modules
+            if (selectedCourseId) {
+                fetchModules(selectedCourseId);
+            } else {
+                setLoading(false);
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            toast.error('Erro ao carregar dados');
+            setLoading(false);
+        }
+    };
+
+    const fetchModules = async (courseId: string) => {
+        setLoading(true);
+        try {
+            const { data, error } = await supabase
+                .from('modules')
+                .select('*')
                 .eq('course_id', courseId)
                 .order('order_position', { ascending: true });
 
@@ -119,6 +148,44 @@ const Modules = () => {
             toast.error('Erro ao carregar módulos');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleDragEnd = async (event: DragEndEvent) => {
+        const { active, over } = event;
+
+        if (active.id !== over?.id) {
+            setModules((items) => {
+                const oldIndex = items.findIndex((i) => i.id === active.id);
+                const newIndex = items.findIndex((i) => i.id === over?.id);
+                const newItems = arrayMove(items, oldIndex, newIndex);
+
+                // Update order in DB
+                updateOrder(newItems);
+
+                return newItems;
+            });
+        }
+    };
+
+    const updateOrder = async (items: Module[]) => {
+        try {
+            const updates = items.map((item, index) => ({
+                id: item.id,
+                order_position: index,
+            }));
+
+            for (const item of updates) {
+                await supabase
+                    .from('modules')
+                    .update({ order_position: item.order_position })
+                    .eq('id', item.id);
+            }
+
+            toast.success('Ordem atualizada!');
+        } catch (error) {
+            console.error('Error updating order:', error);
+            toast.error('Erro ao salvar ordem.');
         }
     };
 
@@ -232,7 +299,7 @@ const Modules = () => {
                 </label>
                 <select
                     id="course-select"
-                    className="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-600 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-[#1a1f2e] text-white"
+                    className="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-600 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-[#1a1f2e] text-white"
                     value={selectedCourseId}
                     onChange={(e) => setSelectedCourseId(e.target.value)}
                 >
