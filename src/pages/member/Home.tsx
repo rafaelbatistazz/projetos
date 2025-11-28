@@ -141,7 +141,7 @@ const Home = () => {
                             <motion.div
                                 key={course.id}
                                 variants={item}
-                                onClick={() => navigate(`/member/course/${course.id}`)}
+                                onClick={() => navigate(`/course/${course.id}`)}
                                 className="group cursor-pointer bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-primary/20 transition-all duration-300 hover:-translate-y-1"
                             >
                                 <div className="aspect-[2/3] relative overflow-hidden">
